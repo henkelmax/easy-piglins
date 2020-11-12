@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GBG",
+    "IWI"
+  ],
+  "key": {
+    "G": {
+      "tag": "forge:glass_panes/colorless"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "B": {
+      "tag": "forge:storage_blocks/gold"
+    },
+    "W": {
+      "item": "minecraft:nether_bricks"
+    }
+  },
+  "result": {
+    "item": "easy_piglins:barterer"
+  }
+}
