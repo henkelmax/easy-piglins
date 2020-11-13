@@ -1,1 +1,1 @@
-- Piglins can only be picked up if not busy
+- Added brazilian translation
