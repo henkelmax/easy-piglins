@@ -15,6 +15,7 @@ There is also a block that automates bartering.
 ## The Piglin Item
 
 The piglin item can be obtained by sneaking and right-clicking an adult piglin.
+Note that you can only pick up piglins if they are not busy or aggressive.
 
 ![](https://media.giphy.com/media/kD7jJd4GfHYqJfnq5l/giphy.gif)
 
