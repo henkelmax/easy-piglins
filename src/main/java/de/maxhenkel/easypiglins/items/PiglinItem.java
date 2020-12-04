@@ -117,6 +117,7 @@ public class PiglinItem extends Item {
 
         PiglinEntity piglin = new PiglinEntity(EntityType.PIGLIN, world);
         piglin.readAdditional(compound);
+        piglin.hurtTime = 0;
         return piglin;
     }
 

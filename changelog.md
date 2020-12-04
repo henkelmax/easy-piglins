@@ -1,1 +1,1 @@
-- Added german translation
+- Fixed piglins red when recently hit
