@@ -1,1 +1,1 @@
-- Fixed piglins red when recently hit
+- Fixed piglin head shaking in some cases
