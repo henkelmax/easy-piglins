@@ -1,1 +1,1 @@
-- Fixed piglin head shaking in some cases
+- Updated to 1.16.5
