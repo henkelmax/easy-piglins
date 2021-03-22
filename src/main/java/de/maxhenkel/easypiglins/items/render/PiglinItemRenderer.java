@@ -19,11 +19,11 @@ public class PiglinItemRenderer extends ItemStackTileEntityRenderer {
     }
 
     @Override
-    public void func_239207_a_(ItemStack itemStackIn, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void renderByItem(ItemStack itemStackIn, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         if (renderer == null) {
-            renderer = new PiglinRenderer(minecraft.getRenderManager(), false);
+            renderer = new PiglinRenderer(minecraft.getEntityRenderDispatcher(), false);
         }
-        renderer.render(ModItems.PIGLIN.getPiglinFast(minecraft.world, itemStackIn), 0F, 1F, matrixStackIn, bufferIn, combinedLightIn);
+        renderer.render(ModItems.PIGLIN.getPiglinFast(minecraft.level, itemStackIn), 0F, 1F, matrixStackIn, bufferIn, combinedLightIn);
     }
 
 }

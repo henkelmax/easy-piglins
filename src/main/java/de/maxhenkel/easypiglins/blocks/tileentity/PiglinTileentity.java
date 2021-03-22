@@ -30,7 +30,7 @@ public class PiglinTileentity extends FakeWorldTileentity {
 
     public PiglinEntity getPiglinEntity() {
         if (piglinEntity == null && !piglin.isEmpty()) {
-            piglinEntity = ModItems.PIGLIN.getPiglin(world, piglin);
+            piglinEntity = ModItems.PIGLIN.getPiglin(level, piglin);
         }
         return piglinEntity;
     }
@@ -41,10 +41,10 @@ public class PiglinTileentity extends FakeWorldTileentity {
         if (piglin.isEmpty()) {
             piglinEntity = null;
         } else {
-            piglinEntity = ModItems.PIGLIN.getPiglin(world, piglin);
+            piglinEntity = ModItems.PIGLIN.getPiglin(level, piglin);
             onAddPiglin(piglinEntity);
         }
-        markDirty();
+        setChanged();
         sync();
     }
 
@@ -59,25 +59,25 @@ public class PiglinTileentity extends FakeWorldTileentity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         if (hasPiglin()) {
             CompoundNBT comp = new CompoundNBT();
-            getPiglin().write(comp);
+            getPiglin().save(comp);
             compound.put("Piglin", comp);
         }
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound) {
+    public void load(BlockState state, CompoundNBT compound) {
         if (compound.contains("Piglin")) {
             CompoundNBT comp = compound.getCompound("Piglin");
-            piglin = ItemStack.read(comp);
+            piglin = ItemStack.of(comp);
             piglinEntity = null;
         } else {
             removePiglin();
         }
-        super.read(state, compound);
+        super.load(state, compound);
     }
 
 }

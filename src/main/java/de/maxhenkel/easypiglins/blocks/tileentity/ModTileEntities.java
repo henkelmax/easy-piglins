@@ -15,7 +15,7 @@ public class ModTileEntities {
     public static TileEntityType<BartererTileentity> BARTERER;
 
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-        BARTERER = TileEntityType.Builder.create(BartererTileentity::new, ModBlocks.BARTERER).build(null);
+        BARTERER = TileEntityType.Builder.of(BartererTileentity::new, ModBlocks.BARTERER).build(null);
         BARTERER.setRegistryName(new ResourceLocation(Main.MODID, "barterer"));
         event.getRegistry().register(BARTERER);
     }

@@ -10,13 +10,13 @@ public class ModItemGroups {
     public static final ItemGroup TAB_EASY_PIGLINS = new ItemGroup("easy_piglins") {
 
         @Override
-        public ItemStack createIcon() {
+        public ItemStack makeIcon() {
             return new ItemStack(ModItems.PIGLIN);
         }
 
         @Override
-        public void fill(NonNullList<ItemStack> list) {
-            super.fill(list);
+        public void fillItemList(NonNullList<ItemStack> list) {
+            super.fillItemList(list);
             list.add(new ItemStack(ModItems.PIGLIN));
         }
 

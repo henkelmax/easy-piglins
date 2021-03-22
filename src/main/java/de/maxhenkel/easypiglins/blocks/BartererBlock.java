@@ -37,45 +37,45 @@ import javax.annotation.Nullable;
 public class BartererBlock extends HorizontalRotatableBlock implements ITileEntityProvider, IItemBlock {
 
     public BartererBlock() {
-        super(Properties.create(Material.IRON).hardnessAndResistance(2.5F).sound(SoundType.METAL).notSolid().setLightLevel(value -> 15));
+        super(Properties.of(Material.METAL).strength(2.5F).sound(SoundType.METAL).noOcclusion().lightLevel(value -> 15));
         setRegistryName(new ResourceLocation(Main.MODID, "barterer"));
     }
 
     @Override
     public Item toItem() {
-        return new BlockItem(this, new Item.Properties().group(ModItemGroups.TAB_EASY_PIGLINS).setISTER(() -> BartererItemRenderer::new)).setRegistryName(getRegistryName());
+        return new BlockItem(this, new Item.Properties().tab(ModItemGroups.TAB_EASY_PIGLINS).setISTER(() -> BartererItemRenderer::new)).setRegistryName(getRegistryName());
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        ItemStack heldItem = player.getHeldItem(handIn);
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        ItemStack heldItem = player.getItemInHand(handIn);
+        TileEntity tileEntity = worldIn.getBlockEntity(pos);
         if (!(tileEntity instanceof BartererTileentity)) {
-            return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+            return super.use(state, worldIn, pos, player, handIn, hit);
         }
         BartererTileentity barterer = (BartererTileentity) tileEntity;
         if (!barterer.hasPiglin() && heldItem.getItem() instanceof PiglinItem) {
             barterer.setPiglin(heldItem.copy());
             ItemUtils.decrItemStack(heldItem, player);
-            playPiglinSound(worldIn, pos, SoundEvents.ENTITY_PIGLIN_ADMIRING_ITEM);
+            playPiglinSound(worldIn, pos, SoundEvents.PIGLIN_ADMIRING_ITEM);
             return ActionResultType.SUCCESS;
-        } else if (player.isSneaking() && barterer.hasPiglin()) {
+        } else if (player.isShiftKeyDown() && barterer.hasPiglin()) {
             ItemStack stack = barterer.removePiglin();
             if (heldItem.isEmpty()) {
-                player.setHeldItem(handIn, stack);
+                player.setItemInHand(handIn, stack);
             } else {
-                if (!player.inventory.addItemStackToInventory(stack)) {
-                    Direction direction = state.get(BartererBlock.FACING);
-                    InventoryHelper.spawnItemStack(worldIn, direction.getXOffset() + pos.getX() + 0.5D, pos.getY() + 0.5D, direction.getZOffset() + pos.getZ() + 0.5D, stack);
+                if (!player.inventory.add(stack)) {
+                    Direction direction = state.getValue(BartererBlock.FACING);
+                    InventoryHelper.dropItemStack(worldIn, direction.getStepX() + pos.getX() + 0.5D, pos.getY() + 0.5D, direction.getStepZ() + pos.getZ() + 0.5D, stack);
                 }
             }
-            playPiglinSound(worldIn, pos, SoundEvents.ENTITY_PIGLIN_JEALOUS);
+            playPiglinSound(worldIn, pos, SoundEvents.PIGLIN_JEALOUS);
             return ActionResultType.SUCCESS;
         } else {
-            player.openContainer(new INamedContainerProvider() {
+            player.openMenu(new INamedContainerProvider() {
                 @Override
                 public ITextComponent getDisplayName() {
-                    return new TranslationTextComponent(state.getBlock().getTranslationKey());
+                    return new TranslationTextComponent(state.getBlock().getDescriptionId());
                 }
 
                 @Nullable
@@ -94,18 +94,18 @@ public class BartererBlock extends HorizontalRotatableBlock implements ITileEnti
 
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(IBlockReader world) {
+    public TileEntity newBlockEntity(IBlockReader world) {
         return new BartererTileentity();
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.MODEL;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public float getShadeBrightness(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 1F;
     }
 

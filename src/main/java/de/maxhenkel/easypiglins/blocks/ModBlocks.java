@@ -18,7 +18,7 @@ public class ModBlocks {
         );
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            RenderTypeLookup.setRenderLayer(BARTERER, RenderType.getCutout());
+            RenderTypeLookup.setRenderLayer(BARTERER, RenderType.cutout());
         }
     }
 

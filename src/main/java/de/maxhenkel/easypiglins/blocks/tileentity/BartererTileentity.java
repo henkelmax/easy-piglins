@@ -35,7 +35,7 @@ public class BartererTileentity extends PiglinTileentity implements ITickableTil
 
     @Override
     public void tick() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
         PiglinEntity p = getPiglinEntity();
@@ -43,11 +43,11 @@ public class BartererTileentity extends PiglinTileentity implements ITickableTil
             return;
         }
 
-        if (world.getGameTime() % 20 == 0 && world.rand.nextInt(40) == 0) {
-            BartererBlock.playPiglinSound(world, getPos(), SoundEvents.ENTITY_PIGLIN_AMBIENT);
+        if (level.getGameTime() % 20 == 0 && level.random.nextInt(40) == 0) {
+            BartererBlock.playPiglinSound(level, worldPosition, SoundEvents.PIGLIN_AMBIENT);
         }
 
-        if (world.getGameTime() % 120 == 0) {
+        if (level.getGameTime() % 120 == 0) {
             if (removeBarteringItem()) {
                 addLoot(p);
             }
@@ -75,10 +75,10 @@ public class BartererTileentity extends PiglinTileentity implements ITickableTil
     }
 
     private void addLoot(PiglinEntity piglin) {
-        LootTable loottable = world.getServer().getLootTableManager().getLootTableFromLocation(LootTables.PIGLIN_BARTERING);
-        List<ItemStack> loot = loottable.generate((new LootContext.Builder((ServerWorld) world)).withParameter(LootParameters.THIS_ENTITY, piglin).withRandom(world.rand).build(LootParameterSets.field_237453_h_));
-        if (world.getRandom().nextInt(5) == 0) {
-            BartererBlock.playPiglinSound(world, getPos(), SoundEvents.ENTITY_PIGLIN_ADMIRING_ITEM);
+        LootTable loottable = level.getServer().getLootTables().get(LootTables.PIGLIN_BARTERING);
+        List<ItemStack> loot = loottable.getRandomItems((new LootContext.Builder((ServerWorld) level)).withParameter(LootParameters.THIS_ENTITY, piglin).withRandom(level.random).create(LootParameterSets.PIGLIN_BARTER));
+        if (level.getRandom().nextInt(5) == 0) {
+            BartererBlock.playPiglinSound(level, getBlockPos(), SoundEvents.PIGLIN_ADMIRING_ITEM);
         }
         IItemHandlerModifiable itemHandler = getOutputInventoryItemHandler();
         for (ItemStack drop : loot) {
@@ -92,32 +92,32 @@ public class BartererTileentity extends PiglinTileentity implements ITickableTil
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         compound.put("InputInventory", ItemStackHelper.saveAllItems(new CompoundNBT(), inputInventory, true));
         compound.put("OutputInventory", ItemStackHelper.saveAllItems(new CompoundNBT(), outputInventory, true));
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound) {
+    public void load(BlockState state, CompoundNBT compound) {
         inputInventory.clear();
         outputInventory.clear();
         ItemStackHelper.loadAllItems(compound.getCompound("InputInventory"), inputInventory);
         ItemStackHelper.loadAllItems(compound.getCompound("OutputInventory"), outputInventory);
-        super.read(state, compound);
+        super.load(state, compound);
     }
 
     public IInventory getInputInventory() {
-        return new ItemListInventory(inputInventory, this::markDirty);
+        return new ItemListInventory(inputInventory, this::setChanged);
     }
 
     public IInventory getOutputInventory() {
-        return new ItemListInventory(outputInventory, this::markDirty);
+        return new ItemListInventory(outputInventory, this::setChanged);
     }
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        if (!removed && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!remove && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if (side.equals(Direction.DOWN)) {
                 return LazyOptional.of(this::getOutputInventoryItemHandler).cast();
             } else {

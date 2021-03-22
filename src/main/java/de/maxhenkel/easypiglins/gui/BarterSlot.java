@@ -11,7 +11,7 @@ public class BarterSlot extends Slot {
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
+    public boolean mayPlace(ItemStack stack) {
         return stack.isPiglinCurrency();
     }
 

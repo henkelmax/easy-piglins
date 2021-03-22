@@ -30,24 +30,24 @@ public class BartererItemRenderer extends ItemStackTileEntityRenderer {
     }
 
     @Override
-    public void func_239207_a_(ItemStack itemStack, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void renderByItem(ItemStack itemStack, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
         if (renderer == null) {
             renderer = new BartererRenderer(TileEntityRendererDispatcher.instance);
         }
 
-        BlockState traderBlock = ModBlocks.BARTERER.getDefaultState();
-        BlockRendererDispatcher dispatcher = minecraft.getBlockRendererDispatcher();
-        dispatcher.getBlockModelRenderer().renderModel(matrixStack.getLast(), buffer.getBuffer(RenderType.getCutoutMipped()), traderBlock, dispatcher.getModelForState(traderBlock), 0, 0, 0, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
+        BlockState traderBlock = ModBlocks.BARTERER.defaultBlockState();
+        BlockRendererDispatcher dispatcher = minecraft.getBlockRenderer();
+        dispatcher.getModelRenderer().renderModel(matrixStack.last(), buffer.getBuffer(RenderType.cutoutMipped()), traderBlock, dispatcher.getBlockModel(traderBlock), 0, 0, 0, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
 
-        CompoundNBT blockEntityTag = itemStack.getChildTag("BlockEntityTag");
+        CompoundNBT blockEntityTag = itemStack.getTagElement("BlockEntityTag");
         if (blockEntityTag == null) {
             return;
         }
 
         BartererTileentity trader = cachedMap.get(itemStack, () -> {
             BartererTileentity bartererTileentity = new BartererTileentity();
-            bartererTileentity.setFakeWorld(minecraft.world);
-            bartererTileentity.read(null, blockEntityTag);
+            bartererTileentity.setFakeWorld(minecraft.level);
+            bartererTileentity.load(null, blockEntityTag);
             return bartererTileentity;
         });
         renderer.render(trader, 0F, matrixStack, buffer, combinedLightIn, combinedOverlayIn);

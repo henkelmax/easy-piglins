@@ -23,7 +23,7 @@ public class PiglinEvents {
         PiglinEntity piglin = (PiglinEntity) event.getTarget();
         PlayerEntity player = event.getPlayer();
 
-        if (player.world.isRemote || !player.isSneaking() || piglin.isChild()) {
+        if (player.level.isClientSide || !player.isShiftKeyDown() || piglin.isBaby()) {
             return;
         }
 
@@ -31,11 +31,11 @@ public class PiglinEvents {
             return;
         }
 
-        PiglinTasks.func_234478_a_(player, true);
+        PiglinTasks.angerNearbyPiglins(player, true);
 
-        if (!PiglinTasks.func_234460_a_(player) || !piglin.getBrain().hasActivity(Activity.IDLE)) {
-            piglin.getBrain().replaceMemory(MemoryModuleType.ANGRY_AT, player.getUniqueID(), 600L);
-            player.sendStatusMessage(new TranslationTextComponent("message.easy_piglins.cant_pick_up"), true);
+        if (!PiglinTasks.isWearingGold(player) || !piglin.getBrain().isActive(Activity.IDLE)) {
+            piglin.getBrain().setMemoryWithExpiry(MemoryModuleType.ANGRY_AT, player.getUUID(), 600L);
+            player.displayClientMessage(new TranslationTextComponent("message.easy_piglins.cant_pick_up"), true);
             return;
         }
 
@@ -43,7 +43,7 @@ public class PiglinEvents {
 
         ModItems.PIGLIN.setPiglin(stack, piglin);
 
-        if (player.inventory.addItemStackToInventory(stack)) {
+        if (player.inventory.add(stack)) {
             piglin.remove();
         }
         event.setCancellationResult(ActionResultType.SUCCESS);

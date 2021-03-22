@@ -25,30 +25,30 @@ public class BartererRenderer extends TileEntityRenderer<BartererTileentity> {
 
     @Override
     public void render(BartererTileentity barterer, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
-        matrixStack.push();
+        matrixStack.pushPose();
 
         if (renderer == null) {
-            renderer = new PiglinRenderer(minecraft.getRenderManager(), false);
+            renderer = new PiglinRenderer(minecraft.getEntityRenderDispatcher(), false);
         }
 
         Direction direction = Direction.SOUTH;
         if (!barterer.isFakeWorld()) {
-            direction = barterer.getBlockState().get(BartererBlock.FACING);
+            direction = barterer.getBlockState().getValue(BartererBlock.FACING);
         }
 
         PiglinEntity piglin = barterer.getPiglinEntity();
         if (piglin != null) {
-            matrixStack.push();
-            piglin.setHeldItem(Hand.OFF_HAND, barterer.getBarteringItem());
+            matrixStack.pushPose();
+            piglin.setItemInHand(Hand.OFF_HAND, barterer.getBarteringItem());
             matrixStack.translate(0.5D, 1D / 16D, 0.5D);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(-direction.getHorizontalAngle()));
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(-direction.toYRot()));
             matrixStack.translate(0D, 0D, -4D / 16D);
             matrixStack.scale(0.45F, 0.45F, 0.45F);
             renderer.render(piglin, 0F, 1F, matrixStack, buffer, combinedLightIn);
-            matrixStack.pop();
+            matrixStack.popPose();
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
 }
