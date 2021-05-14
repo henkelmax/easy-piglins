@@ -50,7 +50,7 @@ public class BartererItemRenderer extends ItemStackTileEntityRenderer {
             bartererTileentity.load(null, blockEntityTag);
             return bartererTileentity;
         });
-        renderer.render(trader, 0F, matrixStack, buffer, combinedLightIn, combinedOverlayIn);
+        renderer.renderWithoutBlock(trader, 0F, matrixStack, buffer, combinedLightIn, combinedOverlayIn);
     }
 
 }

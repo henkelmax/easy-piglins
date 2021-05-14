@@ -100,7 +100,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements ITileEnti
 
     @Override
     public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.MODEL;
+        return BlockRenderType.INVISIBLE;
     }
 
     @OnlyIn(Dist.CLIENT)
