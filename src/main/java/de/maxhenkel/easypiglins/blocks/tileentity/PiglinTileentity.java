@@ -1,19 +1,20 @@
 package de.maxhenkel.easypiglins.blocks.tileentity;
 
 import de.maxhenkel.easypiglins.items.ModItems;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.monster.piglin.PiglinEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class PiglinTileentity extends FakeWorldTileentity {
 
     private ItemStack piglin;
-    private PiglinEntity piglinEntity;
+    private Piglin piglinEntity;
 
-    public PiglinTileentity(TileEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public PiglinTileentity(BlockEntityType<?> type, BlockState defaultState, BlockPos pos, BlockState state) {
+        super(type, defaultState, pos, state);
         piglin = ItemStack.EMPTY;
     }
 
@@ -28,7 +29,7 @@ public class PiglinTileentity extends FakeWorldTileentity {
         return !piglin.isEmpty();
     }
 
-    public PiglinEntity getPiglinEntity() {
+    public Piglin getPiglinEntity() {
         if (piglinEntity == null && !piglin.isEmpty()) {
             piglinEntity = ModItems.PIGLIN.getPiglin(level, piglin);
         }
@@ -48,7 +49,7 @@ public class PiglinTileentity extends FakeWorldTileentity {
         sync();
     }
 
-    protected void onAddPiglin(PiglinEntity piglin) {
+    protected void onAddPiglin(Piglin piglin) {
 
     }
 
@@ -59,9 +60,9 @@ public class PiglinTileentity extends FakeWorldTileentity {
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public CompoundTag save(CompoundTag compound) {
         if (hasPiglin()) {
-            CompoundNBT comp = new CompoundNBT();
+            CompoundTag comp = new CompoundTag();
             getPiglin().save(comp);
             compound.put("Piglin", comp);
         }
@@ -69,15 +70,15 @@ public class PiglinTileentity extends FakeWorldTileentity {
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compound) {
+    public void load(CompoundTag compound) {
         if (compound.contains("Piglin")) {
-            CompoundNBT comp = compound.getCompound("Piglin");
+            CompoundTag comp = compound.getCompound("Piglin");
             piglin = ItemStack.of(comp);
             piglinEntity = null;
         } else {
             removePiglin();
         }
-        super.load(state, compound);
+        super.load(compound);
     }
 
 }

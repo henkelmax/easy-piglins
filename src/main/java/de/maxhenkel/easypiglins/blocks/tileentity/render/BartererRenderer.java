@@ -1,47 +1,50 @@
 package de.maxhenkel.easypiglins.blocks.tileentity.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import de.maxhenkel.corelib.client.RenderUtils;
 import de.maxhenkel.easypiglins.blocks.BartererBlock;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
 import de.maxhenkel.easypiglins.blocks.tileentity.BartererTileentity;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.entity.monster.piglin.PiglinEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-public class BartererRenderer extends TileEntityRenderer<BartererTileentity> {
+public class BartererRenderer implements BlockEntityRenderer<BartererTileentity> {
 
     private Minecraft minecraft;
+    protected BlockEntityRendererProvider.Context context;
     private PiglinRenderer renderer;
 
-    public BartererRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public BartererRenderer(BlockEntityRendererProvider.Context context) {
+        this.context = context;
         minecraft = Minecraft.getInstance();
     }
 
     @Override
-    public void render(BartererTileentity barterer, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(BartererTileentity barterer, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         renderBlock(matrixStack, buffer, combinedLightIn, combinedOverlayIn);
         renderWithoutBlock(barterer, partialTicks, matrixStack, buffer, combinedLightIn, combinedOverlayIn);
     }
 
-    public void renderWithoutBlock(BartererTileentity barterer, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void renderWithoutBlock(BartererTileentity barterer, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         matrixStack.pushPose();
 
         renderBlock(matrixStack, buffer, combinedLightIn, combinedOverlayIn);
 
         if (renderer == null) {
-            renderer = new PiglinRenderer(minecraft.getEntityRenderDispatcher(), false);
+            renderer = new PiglinRenderer(getEntityRenderer(), ModelLayers.PIGLIN, ModelLayers.PIGLIN_INNER_ARMOR, ModelLayers.PIGLIN_OUTER_ARMOR, false);
         }
 
         Direction direction = Direction.SOUTH;
@@ -49,10 +52,10 @@ public class BartererRenderer extends TileEntityRenderer<BartererTileentity> {
             direction = barterer.getBlockState().getValue(BartererBlock.FACING);
         }
 
-        PiglinEntity piglin = barterer.getPiglinEntity();
+        Piglin piglin = barterer.getPiglinEntity();
         if (piglin != null) {
             matrixStack.pushPose();
-            piglin.setItemInHand(Hand.OFF_HAND, barterer.getBarteringItem());
+            piglin.setItemInHand(InteractionHand.OFF_HAND, barterer.getBarteringItem());
             matrixStack.translate(0.5D, 1D / 16D, 0.5D);
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(-direction.toYRot()));
             matrixStack.translate(0D, 0D, -4D / 16D);
@@ -64,11 +67,15 @@ public class BartererRenderer extends TileEntityRenderer<BartererTileentity> {
         matrixStack.popPose();
     }
 
-    protected void renderBlock(MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+    protected void renderBlock(PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         BlockState state = ModBlocks.BARTERER.defaultBlockState();
         int color = minecraft.getBlockColors().getColor(state, null, null, 0);
-        BlockRendererDispatcher dispatcher = minecraft.getBlockRenderer();
+        BlockRenderDispatcher dispatcher = minecraft.getBlockRenderer();
         dispatcher.getModelRenderer().renderModel(matrixStack.last(), buffer.getBuffer(RenderType.cutoutMipped()), state, dispatcher.getBlockModel(state), RenderUtils.getRed(color), RenderUtils.getGreen(color), RenderUtils.getBlue(color), combinedLight, combinedOverlay, EmptyModelData.INSTANCE);
+    }
+
+    public EntityRendererProvider.Context getEntityRenderer() {
+        return new EntityRendererProvider.Context(minecraft.getEntityRenderDispatcher(), minecraft.getItemRenderer(), minecraft.getResourceManager(), minecraft.getEntityModels(), minecraft.font);
     }
 
 }

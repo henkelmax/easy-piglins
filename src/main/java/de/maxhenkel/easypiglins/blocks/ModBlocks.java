@@ -1,9 +1,9 @@
 package de.maxhenkel.easypiglins.blocks;
 
-import net.minecraft.block.Block;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -18,7 +18,7 @@ public class ModBlocks {
         );
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            RenderTypeLookup.setRenderLayer(BARTERER, RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(BARTERER, RenderType.cutout());
         }
     }
 

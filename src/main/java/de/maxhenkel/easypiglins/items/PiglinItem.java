@@ -3,39 +3,64 @@ package de.maxhenkel.easypiglins.items;
 import de.maxhenkel.corelib.CachedMap;
 import de.maxhenkel.easypiglins.Main;
 import de.maxhenkel.easypiglins.items.render.PiglinItemRenderer;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.monster.piglin.PiglinEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IItemRenderProperties;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PiglinItem extends Item {
 
-    private CachedMap<ItemStack, PiglinEntity> cachedPiglins;
+    private CachedMap<ItemStack, Piglin> cachedPiglins;
     private String translationKey;
 
     public PiglinItem() {
-        super(new Item.Properties().stacksTo(1).setISTER(() -> PiglinItemRenderer::new));
+        super(new Item.Properties().stacksTo(1));
         cachedPiglins = new CachedMap<>(10_000);
         translationKey = EntityType.PIGLIN.getDescriptionId();
+
+        DispenserBlock.registerBehavior(this, (source, stack) -> {
+            Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+            BlockPos blockpos = source.getPos().relative(direction);
+            Level world = source.getLevel();
+            Piglin piglin = getPiglin(world, stack);
+            piglin.absMoveTo(blockpos.getX() + 0.5D, blockpos.getY(), blockpos.getZ() + 0.5D, direction.toYRot(), 0F);
+            world.addFreshEntity(piglin);
+            stack.shrink(1);
+            return stack;
+        });
+    }
+
+    @Override
+    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+        consumer.accept(new IItemRenderProperties() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+                return new PiglinItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+            }
+        });
     }
 
     @Override
@@ -44,10 +69,10 @@ public class PiglinItem extends Item {
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        World world = context.getLevel();
+    public InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
         if (world.isClientSide) {
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else {
             ItemStack itemstack = context.getItemInHand();
             BlockPos blockpos = context.getClickedPos();
@@ -58,7 +83,7 @@ public class PiglinItem extends Item {
                 blockpos = blockpos.relative(direction);
             }
 
-            PiglinEntity piglin = getPiglin(world, itemstack);
+            Piglin piglin = getPiglin(world, itemstack);
 
             piglin.setPos(blockpos.getX() + 0.5D, blockpos.getY(), blockpos.getZ() + 0.5);
 
@@ -66,19 +91,19 @@ public class PiglinItem extends Item {
                 itemstack.shrink(1);
             }
 
-            return ActionResultType.CONSUME;
+            return InteractionResult.CONSUME;
         }
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public ITextComponent getName(ItemStack stack) {
-        World world = Minecraft.getInstance().level;
+    public Component getName(ItemStack stack) {
+        Level world = Minecraft.getInstance().level;
         if (world == null) {
             return super.getName(stack);
         } else {
@@ -87,9 +112,9 @@ public class PiglinItem extends Item {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, world, entity, itemSlot, isSelected);
-        if (!(entity instanceof PlayerEntity) || world.isClientSide) {
+        if (!(entity instanceof Player) || world.isClientSide) {
             return;
         }
         if (!Main.SERVER_CONFIG.piglinInventorySounds.get()) {
@@ -99,23 +124,23 @@ public class PiglinItem extends Item {
             return;
         }
         if (world.random.nextInt(20) == 0) {
-            PlayerEntity playerEntity = (PlayerEntity) entity;
-            playerEntity.playNotifySound(SoundEvents.PIGLIN_AMBIENT, SoundCategory.HOSTILE, 1F, 1F);
+            Player playerEntity = (Player) entity;
+            playerEntity.playNotifySound(SoundEvents.PIGLIN_AMBIENT, SoundSource.HOSTILE, 1F, 1F);
         }
     }
 
-    public void setPiglin(ItemStack stack, PiglinEntity piglin) {
-        CompoundNBT compound = stack.getOrCreateTagElement("Piglin");
+    public void setPiglin(ItemStack stack, Piglin piglin) {
+        CompoundTag compound = stack.getOrCreateTagElement("Piglin");
         piglin.addAdditionalSaveData(compound);
     }
 
-    public PiglinEntity getPiglin(World world, ItemStack stack) {
-        CompoundNBT compound = stack.getTagElement("Piglin");
+    public Piglin getPiglin(Level world, ItemStack stack) {
+        CompoundTag compound = stack.getTagElement("Piglin");
         if (compound == null) {
-            compound = new CompoundNBT();
+            compound = new CompoundTag();
         }
 
-        PiglinEntity piglin = new PiglinEntity(EntityType.PIGLIN, world);
+        Piglin piglin = new Piglin(EntityType.PIGLIN, world);
         piglin.readAdditionalSaveData(compound);
         piglin.hurtTime = 0;
         piglin.yHeadRot = 0F;
@@ -123,7 +148,7 @@ public class PiglinItem extends Item {
         return piglin;
     }
 
-    public PiglinEntity getPiglinFast(World world, ItemStack stack) {
+    public Piglin getPiglinFast(Level world, ItemStack stack) {
         return cachedPiglins.get(stack, () -> getPiglin(world, stack));
     }
 

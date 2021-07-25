@@ -1,24 +1,24 @@
 package de.maxhenkel.easypiglins.gui;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Inventory;
 
 public class BartererScreen extends InputOutputScreen<BartererContainer> {
 
-    public BartererScreen(BartererContainer container, PlayerInventory playerInventory, ITextComponent name) {
+    public BartererScreen(BartererContainer container, Inventory playerInventory, Component name) {
         super(container, playerInventory, name);
     }
 
     @Override
-    protected IFormattableTextComponent getTopText() {
-        return new TranslationTextComponent("gui.easy_piglins.input_items");
+    protected MutableComponent getTopText() {
+        return new TranslatableComponent("gui.easy_piglins.input_items");
     }
 
     @Override
-    protected IFormattableTextComponent getBottomText() {
-        return new TranslationTextComponent("gui.easy_piglins.output_items");
+    protected MutableComponent getBottomText() {
+        return new TranslatableComponent("gui.easy_piglins.output_items");
     }
 
 }

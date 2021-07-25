@@ -1,1 +1,1 @@
-- Improved block rendering
+- Updated to 1.17.1
