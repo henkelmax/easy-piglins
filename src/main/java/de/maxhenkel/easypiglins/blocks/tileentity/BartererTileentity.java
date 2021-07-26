@@ -1,5 +1,6 @@
 package de.maxhenkel.easypiglins.blocks.tileentity;
 
+import de.maxhenkel.corelib.blockentity.IServerTickableBlockEntity;
 import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.easypiglins.blocks.BartererBlock;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
@@ -27,7 +28,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
 
-public class BartererTileentity extends PiglinTileentity {
+public class BartererTileentity extends PiglinTileentity implements IServerTickableBlockEntity {
 
     private NonNullList<ItemStack> inputInventory;
     private NonNullList<ItemStack> outputInventory;
@@ -38,10 +39,8 @@ public class BartererTileentity extends PiglinTileentity {
         outputInventory = NonNullList.withSize(4, ItemStack.EMPTY);
     }
 
+    @Override
     public void tickServer() {
-        if (level.isClientSide) {
-            return;
-        }
         Piglin p = getPiglinEntity();
         if (p == null) {
             return;

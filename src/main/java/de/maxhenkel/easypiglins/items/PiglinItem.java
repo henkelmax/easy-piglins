@@ -1,10 +1,10 @@
 package de.maxhenkel.easypiglins.items;
 
 import de.maxhenkel.corelib.CachedMap;
+import de.maxhenkel.corelib.client.CustomRendererItem;
 import de.maxhenkel.easypiglins.Main;
 import de.maxhenkel.easypiglins.items.render.PiglinItemRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -25,19 +25,17 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IItemRenderProperties;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.Consumer;
 
-public class PiglinItem extends Item {
+public class PiglinItem extends CustomRendererItem {
 
     private CachedMap<ItemStack, Piglin> cachedPiglins;
     private String translationKey;
 
     public PiglinItem() {
-        super(new Item.Properties().stacksTo(1));
+        super(new Item.Properties().stacksTo(1), PiglinItemRenderer::new);
         cachedPiglins = new CachedMap<>(10_000);
         translationKey = EntityType.PIGLIN.getDescriptionId();
 
@@ -50,16 +48,6 @@ public class PiglinItem extends Item {
             world.addFreshEntity(piglin);
             stack.shrink(1);
             return stack;
-        });
-    }
-
-    @Override
-    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(new IItemRenderProperties() {
-            @Override
-            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
-                return new PiglinItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-            }
         });
     }
 

@@ -1,6 +1,8 @@
 package de.maxhenkel.easypiglins.blocks;
 
 import de.maxhenkel.corelib.block.IItemBlock;
+import de.maxhenkel.corelib.blockentity.SimpleBlockEntityTicker;
+import de.maxhenkel.corelib.client.CustomRendererBlockItem;
 import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.easypiglins.Main;
 import de.maxhenkel.easypiglins.ModItemGroups;
@@ -8,7 +10,6 @@ import de.maxhenkel.easypiglins.blocks.tileentity.BartererTileentity;
 import de.maxhenkel.easypiglins.gui.BartererContainer;
 import de.maxhenkel.easypiglins.items.PiglinItem;
 import de.maxhenkel.easypiglins.items.render.BartererItemRenderer;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -24,7 +25,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -40,10 +40,8 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IItemRenderProperties;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 public class BartererBlock extends HorizontalRotatableBlock implements EntityBlock, IItemBlock {
 
@@ -54,17 +52,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
 
     @Override
     public Item toItem() {
-        return new BlockItem(this, new Item.Properties().tab(ModItemGroups.TAB_EASY_PIGLINS)) {
-            @Override
-            public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-                consumer.accept(new IItemRenderProperties() {
-                    @Override
-                    public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
-                        return new BartererItemRenderer();
-                    }
-                });
-            }
-        }.setRegistryName(getRegistryName());
+        return new CustomRendererBlockItem(this, new Item.Properties().tab(ModItemGroups.TAB_EASY_PIGLINS), BartererItemRenderer::new).setRegistryName(getRegistryName());
     }
 
     @Override
@@ -116,14 +104,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level1, BlockState state, BlockEntityType<T> type) {
-        if (level1.isClientSide) {
-            return null;
-        }
-        return (level, blockPos, blockState, t) -> {
-            if (t instanceof BartererTileentity te) {
-                te.tickServer();
-            }
-        };
+        return new SimpleBlockEntityTicker<>();
     }
 
     @Nullable
