@@ -3,6 +3,7 @@ package de.maxhenkel.easypiglins.blocks;
 import de.maxhenkel.corelib.block.IItemBlock;
 import de.maxhenkel.corelib.blockentity.SimpleBlockEntityTicker;
 import de.maxhenkel.corelib.client.CustomRendererBlockItem;
+import de.maxhenkel.corelib.client.ItemRenderer;
 import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.easypiglins.Main;
 import de.maxhenkel.easypiglins.ModItemGroups;
@@ -52,7 +53,13 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
 
     @Override
     public Item toItem() {
-        return new CustomRendererBlockItem(this, new Item.Properties().tab(ModItemGroups.TAB_EASY_PIGLINS), BartererItemRenderer::new).setRegistryName(getRegistryName());
+        return new CustomRendererBlockItem(this, new Item.Properties().tab(ModItemGroups.TAB_EASY_PIGLINS)) {
+            @OnlyIn(Dist.CLIENT)
+            @Override
+            public ItemRenderer createItemRenderer() {
+                return new BartererItemRenderer();
+            }
+        }.setRegistryName(getRegistryName());
     }
 
     @Override

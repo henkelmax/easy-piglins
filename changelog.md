@@ -1,1 +1,1 @@
-- Updated dependencies
+- Fixed crash on servers

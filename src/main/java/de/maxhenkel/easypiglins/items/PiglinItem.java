@@ -2,6 +2,7 @@ package de.maxhenkel.easypiglins.items;
 
 import de.maxhenkel.corelib.CachedMap;
 import de.maxhenkel.corelib.client.CustomRendererItem;
+import de.maxhenkel.corelib.client.ItemRenderer;
 import de.maxhenkel.easypiglins.Main;
 import de.maxhenkel.easypiglins.items.render.PiglinItemRenderer;
 import net.minecraft.client.Minecraft;
@@ -35,7 +36,7 @@ public class PiglinItem extends CustomRendererItem {
     private String translationKey;
 
     public PiglinItem() {
-        super(new Item.Properties().stacksTo(1), PiglinItemRenderer::new);
+        super(new Item.Properties().stacksTo(1));
         cachedPiglins = new CachedMap<>(10_000);
         translationKey = EntityType.PIGLIN.getDescriptionId();
 
@@ -49,6 +50,12 @@ public class PiglinItem extends CustomRendererItem {
             stack.shrink(1);
             return stack;
         });
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public ItemRenderer createItemRenderer() {
+        return new PiglinItemRenderer();
     }
 
     @Override
