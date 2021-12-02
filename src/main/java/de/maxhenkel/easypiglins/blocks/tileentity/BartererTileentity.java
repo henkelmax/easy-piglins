@@ -95,10 +95,11 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
+    protected void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
+
         compound.put("InputInventory", ContainerHelper.saveAllItems(new CompoundTag(), inputInventory, true));
         compound.put("OutputInventory", ContainerHelper.saveAllItems(new CompoundTag(), outputInventory, true));
-        return super.save(compound);
     }
 
     @Override

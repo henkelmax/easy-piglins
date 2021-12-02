@@ -60,13 +60,14 @@ public class PiglinTileentity extends FakeWorldTileentity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
+    protected void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
+
         if (hasPiglin()) {
             CompoundTag comp = new CompoundTag();
             getPiglin().save(comp);
             compound.put("Piglin", comp);
         }
-        return super.save(compound);
     }
 
     @Override
