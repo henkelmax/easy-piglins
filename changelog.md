@@ -1,1 +1,1 @@
-- Fixed blocks not saving
+- Fixed loader version requirement
