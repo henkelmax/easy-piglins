@@ -1,1 +1,1 @@
-- Fixed loader version requirement
+- Re added JEI integration
