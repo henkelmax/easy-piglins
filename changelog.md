@@ -1,1 +1,1 @@
-- Added korean translation
+- Fixed items can only be taken out of the bottom of the block
