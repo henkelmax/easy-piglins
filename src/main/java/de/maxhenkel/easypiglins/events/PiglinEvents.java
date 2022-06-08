@@ -1,7 +1,7 @@
 package de.maxhenkel.easypiglins.events;
 
 import de.maxhenkel.easypiglins.items.ModItems;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.piglin.Piglin;
@@ -35,13 +35,13 @@ public class PiglinEvents {
 
         if (!PiglinAi.isWearingGold(player) || !piglin.getBrain().isActive(Activity.IDLE)) {
             piglin.getBrain().setMemoryWithExpiry(MemoryModuleType.ANGRY_AT, player.getUUID(), 600L);
-            player.displayClientMessage(new TranslatableComponent("message.easy_piglins.cant_pick_up"), true);
+            player.displayClientMessage(Component.translatable("message.easy_piglins.cant_pick_up"), true);
             return;
         }
 
-        ItemStack stack = new ItemStack(ModItems.PIGLIN);
+        ItemStack stack = new ItemStack(ModItems.PIGLIN.get());
 
-        ModItems.PIGLIN.setPiglin(stack, piglin);
+        ModItems.PIGLIN.get().setPiglin(stack, piglin);
 
         if (player.getInventory().add(stack)) {
             piglin.discard();

@@ -25,7 +25,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     protected ItemStackHandler outputHandler;
 
     public BartererTileentity(BlockPos pos, BlockState state) {
-        super(ModTileEntities.BARTERER, ModBlocks.BARTERER.defaultBlockState(), pos, state);
+        super(ModTileEntities.BARTERER.get(), ModBlocks.BARTERER.get().defaultBlockState(), pos, state);
         inputInventory = NonNullList.withSize(4, ItemStack.EMPTY);
         outputInventory = NonNullList.withSize(4, ItemStack.EMPTY);
 

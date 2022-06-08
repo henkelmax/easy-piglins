@@ -2,25 +2,29 @@ package de.maxhenkel.easypiglins.gui;
 
 import de.maxhenkel.corelib.ClientRegistry;
 import de.maxhenkel.easypiglins.Main;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class Containers {
 
-    public static MenuType<BartererContainer> BREEDER_CONTAINER;
+    private static final DeferredRegister<MenuType<?>> MENU_TYPE_REGISTER = DeferredRegister.create(ForgeRegistries.CONTAINERS, Main.MODID);
+    public static final RegistryObject<MenuType<BartererContainer>> BREEDER_CONTAINER = MENU_TYPE_REGISTER.register("barterer", () ->
+            IForgeMenuType.create((windowId, inv, data) -> new BartererContainer(windowId, inv))
+    );
+
+    public static void init() {
+        MENU_TYPE_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+    }
 
     @OnlyIn(Dist.CLIENT)
     public static void clientSetup() {
-        ClientRegistry.<BartererContainer, BartererScreen>registerScreen(BREEDER_CONTAINER, BartererScreen::new);
-    }
-
-    public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
-        BREEDER_CONTAINER = new MenuType<>(BartererContainer::new);
-        BREEDER_CONTAINER.setRegistryName(new ResourceLocation(Main.MODID, "barterer"));
-        event.getRegistry().register(BREEDER_CONTAINER);
+        ClientRegistry.<BartererContainer, BartererScreen>registerScreen(BREEDER_CONTAINER.get(), BartererScreen::new);
     }
 
 }

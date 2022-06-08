@@ -19,7 +19,7 @@ public class PiglinItemRenderer extends ItemRenderer {
         if (renderer == null) {
             renderer = new PiglinRenderer(RendererProviders.createEntityRendererContext(), ModelLayers.PIGLIN, ModelLayers.PIGLIN_INNER_ARMOR, ModelLayers.PIGLIN_OUTER_ARMOR, false);
         }
-        renderer.render(ModItems.PIGLIN.getPiglinFast(minecraft.level, itemStackIn), 0F, 1F, matrixStackIn, bufferIn, combinedLightIn);
+        renderer.render(ModItems.PIGLIN.get().getPiglinFast(minecraft.level, itemStackIn), 0F, 1F, matrixStackIn, bufferIn, combinedLightIn);
     }
 
 }

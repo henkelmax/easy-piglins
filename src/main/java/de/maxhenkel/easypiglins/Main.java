@@ -6,10 +6,6 @@ import de.maxhenkel.easypiglins.blocks.tileentity.ModTileEntities;
 import de.maxhenkel.easypiglins.events.PiglinEvents;
 import de.maxhenkel.easypiglins.gui.Containers;
 import de.maxhenkel.easypiglins.items.ModItems;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,16 +29,16 @@ public class Main {
     public static ServerConfig SERVER_CONFIG;
 
     public Main() {
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, ModBlocks::registerItems);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, ModItems::registerItems);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, ModBlocks::registerBlocks);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(BlockEntityType.class, ModTileEntities::registerTileEntities);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(MenuType.class, Containers::registerContainers);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 
         SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(Main.this::clientSetup));
+
+        ModBlocks.init();
+        ModItems.init();
+        ModTileEntities.init();
+        Containers.init();
     }
 
     @SubscribeEvent
@@ -54,6 +50,7 @@ public class Main {
     public void clientSetup(FMLClientSetupEvent event) {
         ModTileEntities.clientSetup();
         Containers.clientSetup();
+        ModBlocks.clientSetup();
     }
 
 }

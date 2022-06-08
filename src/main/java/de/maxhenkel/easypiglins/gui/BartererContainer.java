@@ -7,11 +7,11 @@ import net.minecraft.world.inventory.Slot;
 public class BartererContainer extends InputOutputContainer {
 
     public BartererContainer(int id, Inventory playerInventory, Container inputInventory, Container outputInventory) {
-        super(Containers.BREEDER_CONTAINER, id, playerInventory, inputInventory, outputInventory);
+        super(Containers.BREEDER_CONTAINER.get(), id, playerInventory, inputInventory, outputInventory);
     }
 
     public BartererContainer(int id, Inventory playerInventory) {
-        super(Containers.BREEDER_CONTAINER, id, playerInventory);
+        super(Containers.BREEDER_CONTAINER.get(), id, playerInventory);
     }
 
     @Override

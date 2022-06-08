@@ -20,7 +20,7 @@ public class PiglinTileentity extends FakeWorldTileentity {
 
     public ItemStack getPiglin() {
         if (piglinEntity != null) {
-            ModItems.PIGLIN.setPiglin(piglin, piglinEntity);
+            ModItems.PIGLIN.get().setPiglin(piglin, piglinEntity);
         }
         return piglin;
     }
@@ -31,7 +31,7 @@ public class PiglinTileentity extends FakeWorldTileentity {
 
     public Piglin getPiglinEntity() {
         if (piglinEntity == null && !piglin.isEmpty()) {
-            piglinEntity = ModItems.PIGLIN.getPiglin(level, piglin);
+            piglinEntity = ModItems.PIGLIN.get().getPiglin(level, piglin);
         }
         return piglinEntity;
     }
@@ -42,7 +42,7 @@ public class PiglinTileentity extends FakeWorldTileentity {
         if (piglin.isEmpty()) {
             piglinEntity = null;
         } else {
-            piglinEntity = ModItems.PIGLIN.getPiglin(level, piglin);
+            piglinEntity = ModItems.PIGLIN.get().getPiglin(level, piglin);
             onAddPiglin(piglinEntity);
         }
         setChanged();

@@ -8,7 +8,7 @@ import net.minecraft.core.BlockPos;
 public class BartererItemRenderer extends BlockItemRendererBase<BartererRenderer, BartererTileentity> {
 
     public BartererItemRenderer() {
-        super(BartererRenderer::new, () -> new BartererTileentity(BlockPos.ZERO, ModBlocks.BARTERER.defaultBlockState()));
+        super(BartererRenderer::new, () -> new BartererTileentity(BlockPos.ZERO, ModBlocks.BARTERER.get().defaultBlockState()));
     }
 
 }

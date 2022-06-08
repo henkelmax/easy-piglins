@@ -11,13 +11,13 @@ public class ModItemGroups {
 
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(ModItems.PIGLIN);
+            return new ItemStack(ModItems.PIGLIN.get());
         }
 
         @Override
         public void fillItemList(NonNullList<ItemStack> list) {
             super.fillItemList(list);
-            list.add(new ItemStack(ModItems.PIGLIN));
+            list.add(new ItemStack(ModItems.PIGLIN.get()));
         }
 
     };

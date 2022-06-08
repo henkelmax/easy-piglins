@@ -1,17 +1,22 @@
 package de.maxhenkel.easypiglins.items;
 
 import de.maxhenkel.easypiglins.Main;
+import de.maxhenkel.easypiglins.blocks.ModBlocks;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class ModItems {
 
-    public static PiglinItem PIGLIN = new PiglinItem();
+    private static final DeferredRegister<Item> ITEM_REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, Main.MODID);
 
-    public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(
-                PIGLIN.setRegistryName(Main.MODID, "piglin")
-        );
+    public static final RegistryObject<PiglinItem> PIGLIN = ITEM_REGISTER.register("piglin", PiglinItem::new);
+    public static final RegistryObject<Item> BARTERER = ITEM_REGISTER.register("barterer", () -> ModBlocks.BARTERER.get().toItem());
+
+    public static void init() {
+        ITEM_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
 }

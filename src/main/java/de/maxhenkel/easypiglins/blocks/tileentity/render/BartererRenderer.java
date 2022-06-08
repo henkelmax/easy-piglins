@@ -68,14 +68,14 @@ public class BartererRenderer implements BlockEntityRenderer<BartererTileentity>
     }
 
     protected void renderBlock(PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        BlockState state = ModBlocks.BARTERER.defaultBlockState();
+        BlockState state = ModBlocks.BARTERER.get().defaultBlockState();
         int color = minecraft.getBlockColors().getColor(state, null, null, 0);
         BlockRenderDispatcher dispatcher = minecraft.getBlockRenderer();
         dispatcher.getModelRenderer().renderModel(matrixStack.last(), buffer.getBuffer(RenderType.cutoutMipped()), state, dispatcher.getBlockModel(state), RenderUtils.getRed(color), RenderUtils.getGreen(color), RenderUtils.getBlue(color), combinedLight, combinedOverlay, EmptyModelData.INSTANCE);
     }
 
     public EntityRendererProvider.Context getEntityRenderer() {
-        return new EntityRendererProvider.Context(minecraft.getEntityRenderDispatcher(), minecraft.getItemRenderer(), minecraft.getResourceManager(), minecraft.getEntityModels(), minecraft.font);
+        return new EntityRendererProvider.Context(minecraft.getEntityRenderDispatcher(), minecraft.getItemRenderer(), minecraft.getBlockRenderer(), minecraft.gameRenderer.itemInHandRenderer, minecraft.getResourceManager(), minecraft.getEntityModels(), minecraft.font);
     }
 
 }

@@ -5,7 +5,6 @@ import de.maxhenkel.corelib.blockentity.SimpleBlockEntityTicker;
 import de.maxhenkel.corelib.client.CustomRendererBlockItem;
 import de.maxhenkel.corelib.client.ItemRenderer;
 import de.maxhenkel.corelib.item.ItemUtils;
-import de.maxhenkel.easypiglins.Main;
 import de.maxhenkel.easypiglins.ModItemGroups;
 import de.maxhenkel.easypiglins.blocks.tileentity.BartererTileentity;
 import de.maxhenkel.easypiglins.gui.BartererContainer;
@@ -14,8 +13,6 @@ import de.maxhenkel.easypiglins.items.render.BartererItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -48,7 +45,6 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
 
     public BartererBlock() {
         super(Properties.of(Material.METAL).strength(2.5F).sound(SoundType.METAL).noOcclusion().lightLevel(value -> 15));
-        setRegistryName(new ResourceLocation(Main.MODID, "barterer"));
     }
 
     @Override
@@ -59,7 +55,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
             public ItemRenderer createItemRenderer() {
                 return new BartererItemRenderer();
             }
-        }.setRegistryName(getRegistryName());
+        };
     }
 
     @Override
@@ -91,7 +87,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
             player.openMenu(new MenuProvider() {
                 @Override
                 public Component getDisplayName() {
-                    return new TranslatableComponent(state.getBlock().getDescriptionId());
+                    return Component.translatable(state.getBlock().getDescriptionId());
                 }
 
                 @Nullable
