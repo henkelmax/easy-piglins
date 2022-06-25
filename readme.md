@@ -1,3 +1,5 @@
+<!-- modrinth_exclude.start -->
+
 # Easy Piglins ![](http://cf.way2muchnoise.eu/full_419372_downloads.svg) ![](http://cf.way2muchnoise.eu/versions/419372.svg)
 
 ## Links
@@ -8,6 +10,8 @@
 - [Credits](https://modrepo.de/minecraft/easy_piglins/credits)
 
 ---
+
+<!-- modrinth_exclude.end -->
 
 This mod lets you pick up adult piglins as an item.
 There is also a block that automates bartering.
