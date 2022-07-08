@@ -19,7 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 public class BartererRenderer implements BlockEntityRenderer<BartererTileentity> {
 
@@ -71,7 +71,7 @@ public class BartererRenderer implements BlockEntityRenderer<BartererTileentity>
         BlockState state = ModBlocks.BARTERER.get().defaultBlockState();
         int color = minecraft.getBlockColors().getColor(state, null, null, 0);
         BlockRenderDispatcher dispatcher = minecraft.getBlockRenderer();
-        dispatcher.getModelRenderer().renderModel(matrixStack.last(), buffer.getBuffer(RenderType.cutoutMipped()), state, dispatcher.getBlockModel(state), RenderUtils.getRed(color), RenderUtils.getGreen(color), RenderUtils.getBlue(color), combinedLight, combinedOverlay, EmptyModelData.INSTANCE);
+        dispatcher.getModelRenderer().renderModel(matrixStack.last(), buffer.getBuffer(RenderType.cutoutMipped()), state, dispatcher.getBlockModel(state), RenderUtils.getRed(color), RenderUtils.getGreen(color), RenderUtils.getBlue(color), combinedLight, combinedOverlay, ModelData.EMPTY, RenderType.cutoutMipped());
     }
 
     public EntityRendererProvider.Context getEntityRenderer() {
