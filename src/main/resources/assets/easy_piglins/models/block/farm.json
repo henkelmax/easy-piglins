@@ -1,5 +1,7 @@
 {
   "parent": "block/block",
+  "ambientocclusion": false,
+  "render_type": "cutout",
   "textures": {
     "0": "easy_piglins:block/bottom_frame",
     "1": "minecraft:block/glass",
@@ -7,7 +9,6 @@
     "3": "easy_piglins:block/top_frame",
     "particle": "minecraft:block/iron_block"
   },
-  "ambientocclusion": false,
   "elements": [
     {
       "name": "bottom_frame_north",

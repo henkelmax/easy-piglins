@@ -1,1 +1,1 @@
-- Updated Forge version
+- Fixed block render types

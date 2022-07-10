@@ -50,7 +50,6 @@ public class Main {
     public void clientSetup(FMLClientSetupEvent event) {
         ModTileEntities.clientSetup();
         Containers.clientSetup();
-        ModBlocks.clientSetup();
     }
 
 }
