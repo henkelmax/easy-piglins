@@ -21,7 +21,7 @@ public class PiglinEvents {
         }
 
         Piglin piglin = (Piglin) event.getTarget();
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
 
         if (player.level.isClientSide || !player.isShiftKeyDown() || piglin.isBaby()) {
             return;

@@ -13,7 +13,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class Containers {
 
-    private static final DeferredRegister<MenuType<?>> MENU_TYPE_REGISTER = DeferredRegister.create(ForgeRegistries.CONTAINERS, Main.MODID);
+    private static final DeferredRegister<MenuType<?>> MENU_TYPE_REGISTER = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Main.MODID);
     public static final RegistryObject<MenuType<BartererContainer>> BREEDER_CONTAINER = MENU_TYPE_REGISTER.register("barterer", () ->
             IForgeMenuType.create((windowId, inv, data) -> new BartererContainer(windowId, inv))
     );

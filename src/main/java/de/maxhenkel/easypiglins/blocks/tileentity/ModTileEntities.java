@@ -14,7 +14,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ModTileEntities {
 
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_REGISTER = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Main.MODID);
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_REGISTER = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Main.MODID);
 
     public static final RegistryObject<BlockEntityType<BartererTileentity>> BARTERER = BLOCK_ENTITY_REGISTER.register("barterer", () ->
             BlockEntityType.Builder.of(BartererTileentity::new, ModBlocks.BARTERER.get()).build(null)
