@@ -5,7 +5,6 @@ import de.maxhenkel.corelib.blockentity.SimpleBlockEntityTicker;
 import de.maxhenkel.corelib.client.CustomRendererBlockItem;
 import de.maxhenkel.corelib.client.ItemRenderer;
 import de.maxhenkel.corelib.item.ItemUtils;
-import de.maxhenkel.easypiglins.ModItemGroups;
 import de.maxhenkel.easypiglins.blocks.tileentity.BartererTileentity;
 import de.maxhenkel.easypiglins.gui.BartererContainer;
 import de.maxhenkel.easypiglins.items.PiglinItem;
@@ -49,7 +48,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
 
     @Override
     public Item toItem() {
-        return new CustomRendererBlockItem(this, new Item.Properties().tab(ModItemGroups.TAB_EASY_PIGLINS)) {
+        return new CustomRendererBlockItem(this, new Item.Properties()/*.tab(ModItemGroups.TAB_EASY_PIGLINS)*/) { // TODO Fix creative tab
             @OnlyIn(Dist.CLIENT)
             @Override
             public ItemRenderer createItemRenderer() {

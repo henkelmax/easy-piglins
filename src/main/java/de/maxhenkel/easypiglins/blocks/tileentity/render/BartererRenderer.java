@@ -1,7 +1,7 @@
 package de.maxhenkel.easypiglins.blocks.tileentity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import de.maxhenkel.corelib.client.RenderUtils;
 import de.maxhenkel.easypiglins.blocks.BartererBlock;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
@@ -57,7 +57,7 @@ public class BartererRenderer implements BlockEntityRenderer<BartererTileentity>
             matrixStack.pushPose();
             piglin.setItemInHand(InteractionHand.OFF_HAND, barterer.getBarteringItem());
             matrixStack.translate(0.5D, 1D / 16D, 0.5D);
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(-direction.toYRot()));
+            matrixStack.mulPose(Axis.YP.rotationDegrees(-direction.toYRot()));
             matrixStack.translate(0D, 0D, -4D / 16D);
             matrixStack.scale(0.45F, 0.45F, 0.45F);
             renderer.render(piglin, 0F, 1F, matrixStack, buffer, combinedLightIn);
