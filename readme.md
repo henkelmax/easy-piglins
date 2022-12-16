@@ -4,9 +4,6 @@
 
 ## Links
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/easy-piglins)
-- [ModRepo](https://modrepo.de/minecraft/easy_piglins/overview)
-- [GitHub](https://github.com/henkelmax/easy-piglins)
-- [FAQ](https://modrepo.de/minecraft/easy_piglins/faq)
 - [Credits](https://modrepo.de/minecraft/easy_piglins/credits)
 
 ---
