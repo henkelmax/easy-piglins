@@ -19,7 +19,7 @@ public class CreativeTabEvents {
         TAB_EASY_PIGLINS = event.registerCreativeModeTab(new ResourceLocation(Main.MODID, "easy_piglins"), builder -> {
             builder
                     .icon(() -> new ItemStack(ModItems.PIGLIN.get()))
-                    .displayItems((features, output, hasPermissions) -> {
+                    .displayItems((features, output) -> {
                         output.accept(new ItemStack(ModBlocks.BARTERER.get()));
                         output.accept(new ItemStack(ModItems.PIGLIN.get()));
                     })
