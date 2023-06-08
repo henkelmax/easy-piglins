@@ -18,14 +18,13 @@ import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
@@ -86,8 +85,8 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     }
 
     private void addLoot(Piglin piglin) {
-        LootTable loottable = level.getServer().getLootTables().get(BuiltInLootTables.PIGLIN_BARTERING);
-        List<ItemStack> loot = loottable.getRandomItems((new LootContext.Builder((ServerLevel) level)).withParameter(LootContextParams.THIS_ENTITY, piglin).withRandom(level.random).create(LootContextParamSets.PIGLIN_BARTER));
+        LootTable loottable = level.getServer().getLootData().getLootTable(BuiltInLootTables.PIGLIN_BARTERING);
+        List<ItemStack> loot = loottable.getRandomItems((new LootParams.Builder((ServerLevel) level)).withParameter(LootContextParams.THIS_ENTITY, piglin).create(LootContextParamSets.PIGLIN_BARTER));
         if (level.getRandom().nextInt(5) == 0) {
             BartererBlock.playPiglinSound(level, getBlockPos(), SoundEvents.PIGLIN_ADMIRING_ITEM);
         }
