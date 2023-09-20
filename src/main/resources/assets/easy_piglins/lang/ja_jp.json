@@ -1,7 +1,7 @@
 {
-  "block.easy_piglins.barterer": "•¨XŒğŠ·",
+  "block.easy_piglins.barterer": "ç‰©ã€…äº¤æ›",
   "itemGroup.easy_piglins": "Easy Piglins",
-  "gui.easy_piglins.input_items": "“ü—ÍƒAƒCƒeƒ€",
-  "gui.easy_piglins.output_items": "o—ÍƒAƒCƒeƒ€",
-  "message.easy_piglins.cant_pick_up": "“G‘Î’†‚©ì‹Æ’†‚ÌƒsƒOƒŠƒ“‚Í‰ñû‚Å‚«‚Ü‚¹‚ñ"
+  "gui.easy_piglins.input_items": "å…¥åŠ›ã‚¢ã‚¤ãƒ†ãƒ ",
+  "gui.easy_piglins.output_items": "å‡ºåŠ›ã‚¢ã‚¤ãƒ†ãƒ ",
+  "message.easy_piglins.cant_pick_up": "æ•µå¯¾ä¸­ã‹ä½œæ¥­ä¸­ã®ãƒ”ã‚°ãƒªãƒ³ã¯å›åã§ãã¾ã›ã‚“"
 }
