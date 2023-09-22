@@ -41,9 +41,9 @@ public class PiglinItem extends CustomRendererItem {
         translationKey = EntityType.PIGLIN.getDescriptionId();
 
         DispenserBlock.registerBehavior(this, (source, stack) -> {
-            Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-            BlockPos blockpos = source.getPos().relative(direction);
-            Level world = source.getLevel();
+            Direction direction = source.state().getValue(DispenserBlock.FACING);
+            BlockPos blockpos = source.pos().relative(direction);
+            Level world = source.level();
             Piglin piglin = getPiglin(world, stack);
             piglin.absMoveTo(blockpos.getX() + 0.5D, blockpos.getY(), blockpos.getZ() + 0.5D, direction.toYRot(), 0F);
             world.addFreshEntity(piglin);

@@ -110,8 +110,8 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${mod_minecraft_version}-${forge_version}"
 
-    implementation fg.deobf("maven.modrinth:jei:${jei_version}")
-    implementation fg.deobf("maven.modrinth:jade:${jade_version}")
+    compileOnly fg.deobf("maven.modrinth:jei:${jei_version}")
+    compileOnly fg.deobf("maven.modrinth:jade:${jade_version}")
 
     shadow fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:api")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}")
