@@ -132,7 +132,7 @@ modrinth {
     loaders = ['neoforge']
     syncBodyFrom = file('readme.md').text
 }
-tasks.modrinth.dependsOn(build)
+tasks.modrinth.dependsOn(shadowJar)
 
 modUpdate {
     serverURL = 'https://update.maxhenkel.de/'
