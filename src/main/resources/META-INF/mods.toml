@@ -8,8 +8,6 @@ version="${mod_version}"
 displayName="${mod_name}"
 updateJSONURL="https://maxhenkel.de/update/easy_piglins.json"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/easy-piglins"
-# logoFile="easy_piglins.png"
-# credits=""
 authors="${mod_vendor}"
 description='''Easy Piglins'''
 [[dependencies.${mod_id}]]

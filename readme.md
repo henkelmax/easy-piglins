@@ -1,8 +1,9 @@
 <!-- modrinth_exclude.start -->
 
-# Easy Piglins ![](http://cf.way2muchnoise.eu/full_419372_downloads.svg) ![](http://cf.way2muchnoise.eu/versions/419372.svg)
+# Easy Piglins
 
 ## Links
+- [Modrinth](https://modrinth.com/mod/easy-piglins)
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/easy-piglins)
 - [Credits](https://modrepo.de/minecraft/easy_piglins/credits)
 
