@@ -3,10 +3,10 @@ package de.maxhenkel.easypiglins.items;
 import de.maxhenkel.easypiglins.Main;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 public class ModItems {
 
