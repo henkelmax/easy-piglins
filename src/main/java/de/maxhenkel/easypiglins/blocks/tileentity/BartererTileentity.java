@@ -7,7 +7,6 @@ import de.maxhenkel.easypiglins.blocks.BartererBlock;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
 import de.maxhenkel.easypiglins.gui.BarterSlot;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -22,10 +21,9 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+
 import java.util.List;
 
 public class BartererTileentity extends PiglinTileentity implements IServerTickableBlockEntity {
@@ -33,7 +31,7 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     protected NonNullList<ItemStack> inputInventory;
     protected NonNullList<ItemStack> outputInventory;
 
-    protected LazyOptional<MultiItemStackHandler> itemHandler;
+    protected MultiItemStackHandler itemHandler;
     protected ItemStackHandler outputHandler;
 
     public BartererTileentity(BlockPos pos, BlockState state) {
@@ -41,7 +39,7 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
         inputInventory = NonNullList.withSize(4, ItemStack.EMPTY);
         outputInventory = NonNullList.withSize(4, ItemStack.EMPTY);
 
-        itemHandler = LazyOptional.of(() -> new MultiItemStackHandler(inputInventory, outputInventory, BarterSlot::isValid));
+        itemHandler = new MultiItemStackHandler(inputInventory, outputInventory, BarterSlot::isValid);
         outputHandler = new ItemStackHandler(outputInventory);
     }
 
@@ -124,18 +122,8 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
         return new ItemListInventory(outputInventory, this::setChanged);
     }
 
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        if (!remove && cap == Capabilities.ITEM_HANDLER) {
-            return itemHandler.cast();
-        }
-        return super.getCapability(cap, side);
-    }
-
-    @Override
-    public void setRemoved() {
-        itemHandler.invalidate();
-        super.setRemoved();
+    public IItemHandler getItemHandler() {
+        return itemHandler;
     }
 
 }

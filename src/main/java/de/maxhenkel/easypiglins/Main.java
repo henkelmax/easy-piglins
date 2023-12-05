@@ -30,10 +30,11 @@ public class Main {
 
     public Main() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ModTileEntities::onRegisterCapabilities);
 
         SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class);
 
-        if(FMLEnvironment.dist.isClient()){
+        if (FMLEnvironment.dist.isClient()) {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(Main.this::clientSetup);
         }
 
