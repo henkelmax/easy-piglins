@@ -27,5 +27,5 @@ processResources {
 }
 
 shadowJar {
-    relocate 'de.maxhenkel.corelib', 'de.maxhenkel.corpse.corelib'
+    relocate 'de.maxhenkel.corelib', 'de.maxhenkel.easypiglins.corelib'
 }
