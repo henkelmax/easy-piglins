@@ -1,8 +1,9 @@
 <!-- modrinth_exclude.start -->
 
-# Easy Piglins ![](http://cf.way2muchnoise.eu/full_419372_downloads.svg) ![](http://cf.way2muchnoise.eu/versions/419372.svg)
+# Easy Piglins
 
 ## Links
+- [Modrinth](https://modrinth.com/mod/easy-piglins)
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/easy-piglins)
 - [Credits](https://modrepo.de/minecraft/easy_piglins/credits)
 
@@ -12,7 +13,7 @@
 
 This mod lets you pick up adult piglins as an item.
 There is also a block that automates bartering.
- 
+
 ## The Piglin Item
 
 The piglin item can be obtained by sneaking and right-clicking an adult piglin.
@@ -24,7 +25,7 @@ The piglin item can be placed by right-clicking on the ground.
 
 ## The Barterer Block
 
-The barterer block allows to automatically barter with piglins without having to deal with capturing it. 
+The barterer block allows to automatically barter with piglins without having to deal with capturing it.
 This block can also be used in other dimensions without the piglins converting to zobified piglins.
 
 ![](https://media.giphy.com/media/u96Flz8s8OtnrbsTNA/giphy.gif)
@@ -37,6 +38,6 @@ The bartered items will appear in one of the output slots. They can also be suck
 
 It takes exactly 120 ticks (6 seconds) for one barter.
 
-You can take piglins out of the barterer, by sneaking and right-clicking the block with an empty hand. 
+You can take piglins out of the barterer, by sneaking and right-clicking the block with an empty hand.
 
 The barterer keeps its stuff inside if it is broken.
