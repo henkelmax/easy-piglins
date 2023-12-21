@@ -8,6 +8,7 @@ version = "${mod_version}"
 displayName = "Easy Piglins"
 updateJSONURL = "https://update.maxhenkel.de/forge/easy_piglins"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/easy-piglins"
+logoFile = "icon.png"
 authors = "Max Henkel"
 description = '''Easy Piglins'''
 [[dependencies.easy_piglins]]
