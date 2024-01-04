@@ -8,12 +8,12 @@ import de.maxhenkel.easypiglins.gui.Containers;
 import de.maxhenkel.easypiglins.items.ModItems;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
@@ -28,21 +28,21 @@ public class Main {
 
     public static ServerConfig SERVER_CONFIG;
 
-    public Main() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ModTileEntities::onRegisterCapabilities);
+    public Main(IEventBus eventBus) {
+        eventBus.addListener(this::commonSetup);
+        eventBus.addListener(ModTileEntities::onRegisterCapabilities);
 
         SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class);
 
         if (FMLEnvironment.dist.isClient()) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(Main.this::clientSetup);
+            eventBus.addListener(Main.this::clientSetup);
         }
 
-        ModBlocks.init();
-        ModItems.init();
-        ModTileEntities.init();
-        Containers.init();
-        ModCreativeTabs.init();
+        ModBlocks.init(eventBus);
+        ModItems.init(eventBus);
+        ModTileEntities.init(eventBus);
+        Containers.init(eventBus);
+        ModCreativeTabs.init(eventBus);
     }
 
     @SubscribeEvent
