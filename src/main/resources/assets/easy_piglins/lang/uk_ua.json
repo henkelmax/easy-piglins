@@ -1,0 +1,7 @@
+{
+  "block.easy_piglins.barterer": "Обмінник",
+  "itemGroup.easy_piglins": "Easy Piglins",
+  "gui.easy_piglins.input_items": "Вхідні предмети",
+  "gui.easy_piglins.output_items": "Вихідні предмети",
+  "message.easy_piglins.cant_pick_up": "Не можна підібрати агресивних або зайнятих піґлінів"
+}
