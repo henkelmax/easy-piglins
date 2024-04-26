@@ -1,14 +1,13 @@
 package de.maxhenkel.easypiglins.items;
 
-import de.maxhenkel.corelib.CachedMap;
 import de.maxhenkel.corelib.client.CustomRendererItem;
 import de.maxhenkel.corelib.client.ItemRenderer;
 import de.maxhenkel.easypiglins.Main;
+import de.maxhenkel.easypiglins.datacomponents.PiglinData;
 import de.maxhenkel.easypiglins.items.render.PiglinItemRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -26,24 +25,22 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import javax.annotation.Nullable;
+
 import java.util.List;
 
 public class PiglinItem extends CustomRendererItem {
 
-    private CachedMap<ItemStack, Piglin> cachedPiglins;
     private String translationKey;
 
     public PiglinItem() {
         super(new Item.Properties().stacksTo(1));
-        cachedPiglins = new CachedMap<>(10_000);
         translationKey = EntityType.PIGLIN.getDescriptionId();
 
         DispenserBlock.registerBehavior(this, (source, stack) -> {
             Direction direction = source.state().getValue(DispenserBlock.FACING);
             BlockPos blockpos = source.pos().relative(direction);
             Level world = source.level();
-            Piglin piglin = getPiglin(world, stack);
+            Piglin piglin = PiglinData.createPiglin(stack, world);
             piglin.absMoveTo(blockpos.getX() + 0.5D, blockpos.getY(), blockpos.getZ() + 0.5D, direction.toYRot(), 0F);
             world.addFreshEntity(piglin);
             stack.shrink(1);
@@ -77,7 +74,7 @@ public class PiglinItem extends CustomRendererItem {
                 blockpos = blockpos.relative(direction);
             }
 
-            Piglin piglin = getPiglin(world, itemstack);
+            Piglin piglin = PiglinData.createPiglin(itemstack, world);
 
             piglin.setPos(blockpos.getX() + 0.5D, blockpos.getY(), blockpos.getZ() + 0.5);
 
@@ -90,8 +87,8 @@ public class PiglinItem extends CustomRendererItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, context, tooltip, flagIn);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -101,7 +98,7 @@ public class PiglinItem extends CustomRendererItem {
         if (world == null) {
             return super.getName(stack);
         } else {
-            return getPiglinFast(world, stack).getDisplayName();
+            return PiglinData.getCachePiglin(stack, world).getDisplayName();
         }
     }
 
@@ -121,29 +118,6 @@ public class PiglinItem extends CustomRendererItem {
             Player playerEntity = (Player) entity;
             playerEntity.playNotifySound(SoundEvents.PIGLIN_AMBIENT, SoundSource.HOSTILE, 1F, 1F);
         }
-    }
-
-    public void setPiglin(ItemStack stack, Piglin piglin) {
-        CompoundTag compound = stack.getOrCreateTagElement("Piglin");
-        piglin.addAdditionalSaveData(compound);
-    }
-
-    public Piglin getPiglin(Level world, ItemStack stack) {
-        CompoundTag compound = stack.getTagElement("Piglin");
-        if (compound == null) {
-            compound = new CompoundTag();
-        }
-
-        Piglin piglin = new Piglin(EntityType.PIGLIN, world);
-        piglin.readAdditionalSaveData(compound);
-        piglin.hurtTime = 0;
-        piglin.yHeadRot = 0F;
-        piglin.yHeadRotO = 0F;
-        return piglin;
-    }
-
-    public Piglin getPiglinFast(Level world, ItemStack stack) {
-        return cachedPiglins.get(stack, () -> getPiglin(world, stack));
     }
 
 }

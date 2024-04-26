@@ -15,10 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -37,6 +34,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import javax.annotation.Nullable;
 
 public class BartererBlock extends HorizontalRotatableBlock implements EntityBlock, IItemBlock {
@@ -57,18 +55,19 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        ItemStack heldItem = player.getItemInHand(handIn);
-        BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-        if (!(tileEntity instanceof BartererTileentity)) {
-            return super.use(state, worldIn, pos, player, handIn, hit);
+    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (worldIn.isClientSide) {
+            return super.useItemOn(heldItem, state, worldIn, pos, player, handIn, hit);
         }
-        BartererTileentity barterer = (BartererTileentity) tileEntity;
+        BlockEntity tileEntity = worldIn.getBlockEntity(pos);
+        if (!(tileEntity instanceof BartererTileentity barterer)) {
+            return super.useItemOn(heldItem, state, worldIn, pos, player, handIn, hit);
+        }
         if (!barterer.hasPiglin() && heldItem.getItem() instanceof PiglinItem) {
             barterer.setPiglin(heldItem.copy());
             ItemUtils.decrItemStack(heldItem, player);
             playPiglinSound(worldIn, pos, SoundEvents.PIGLIN_ADMIRING_ITEM);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         } else if (player.isShiftKeyDown() && barterer.hasPiglin()) {
             ItemStack stack = barterer.removePiglin();
             if (heldItem.isEmpty()) {
@@ -80,7 +79,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
                 }
             }
             playPiglinSound(worldIn, pos, SoundEvents.PIGLIN_JEALOUS);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         } else {
             player.openMenu(new MenuProvider() {
                 @Override
@@ -94,7 +93,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
                     return new BartererContainer(id, playerInventory, barterer.getInputInventory(), barterer.getOutputInventory());
                 }
             });
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
     }
 

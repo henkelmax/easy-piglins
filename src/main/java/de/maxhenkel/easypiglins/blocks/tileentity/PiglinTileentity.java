@@ -1,7 +1,8 @@
 package de.maxhenkel.easypiglins.blocks.tileentity;
 
-import de.maxhenkel.easypiglins.items.ModItems;
+import de.maxhenkel.easypiglins.datacomponents.PiglinData;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +21,7 @@ public class PiglinTileentity extends FakeWorldTileentity {
 
     public ItemStack getPiglin() {
         if (piglinEntity != null) {
-            ModItems.PIGLIN.get().setPiglin(piglin, piglinEntity);
+            PiglinData.applyToItem(piglin, piglinEntity);
         }
         return piglin;
     }
@@ -31,7 +32,7 @@ public class PiglinTileentity extends FakeWorldTileentity {
 
     public Piglin getPiglinEntity() {
         if (piglinEntity == null && !piglin.isEmpty()) {
-            piglinEntity = ModItems.PIGLIN.get().getPiglin(level, piglin);
+            piglinEntity = PiglinData.createPiglin(piglin, level);
         }
         return piglinEntity;
     }
@@ -42,7 +43,7 @@ public class PiglinTileentity extends FakeWorldTileentity {
         if (piglin.isEmpty()) {
             piglinEntity = null;
         } else {
-            piglinEntity = ModItems.PIGLIN.get().getPiglin(level, piglin);
+            piglinEntity = PiglinData.createPiglin(piglin, level);
             onAddPiglin(piglinEntity);
         }
         setChanged();
@@ -60,26 +61,26 @@ public class PiglinTileentity extends FakeWorldTileentity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
+    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.saveAdditional(compound, provider);
 
         if (hasPiglin()) {
             CompoundTag comp = new CompoundTag();
-            getPiglin().save(comp);
+            getPiglin().save(provider, comp);
             compound.put("Piglin", comp);
         }
     }
 
     @Override
-    public void load(CompoundTag compound) {
+    protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         if (compound.contains("Piglin")) {
             CompoundTag comp = compound.getCompound("Piglin");
-            piglin = ItemStack.of(comp);
+            piglin = PiglinData.convert(provider, comp);
             piglinEntity = null;
         } else {
             removePiglin();
         }
-        super.load(compound);
+        super.loadAdditional(compound, provider);
     }
 
 }

@@ -5,8 +5,10 @@ import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.easypiglins.MultiItemStackHandler;
 import de.maxhenkel.easypiglins.blocks.BartererBlock;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
+import de.maxhenkel.easypiglins.datacomponents.PiglinData;
 import de.maxhenkel.easypiglins.gui.BarterSlot;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -82,7 +84,7 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     }
 
     private void addLoot(Piglin piglin) {
-        LootTable loottable = level.getServer().getLootData().getLootTable(BuiltInLootTables.PIGLIN_BARTERING);
+        LootTable loottable = level.getServer().reloadableRegistries().getLootTable(BuiltInLootTables.PIGLIN_BARTERING);
         List<ItemStack> loot = loottable.getRandomItems((new LootParams.Builder((ServerLevel) level)).withParameter(LootContextParams.THIS_ENTITY, piglin).create(LootContextParamSets.PIGLIN_BARTER));
         if (level.getRandom().nextInt(5) == 0) {
             BartererBlock.playPiglinSound(level, getBlockPos(), SoundEvents.PIGLIN_ADMIRING_ITEM);
@@ -98,20 +100,20 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
+    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.saveAdditional(compound, provider);
 
-        compound.put("InputInventory", ContainerHelper.saveAllItems(new CompoundTag(), inputInventory, true));
-        compound.put("OutputInventory", ContainerHelper.saveAllItems(new CompoundTag(), outputInventory, true));
+        compound.put("InputInventory", ContainerHelper.saveAllItems(new CompoundTag(), inputInventory, true, provider));
+        compound.put("OutputInventory", ContainerHelper.saveAllItems(new CompoundTag(), outputInventory, true, provider));
     }
 
     @Override
-    public void load(CompoundTag compound) {
+    protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         inputInventory.clear();
         outputInventory.clear();
-        ContainerHelper.loadAllItems(compound.getCompound("InputInventory"), inputInventory);
-        ContainerHelper.loadAllItems(compound.getCompound("OutputInventory"), outputInventory);
-        super.load(compound);
+        PiglinData.convertInventory(compound.getCompound("InputInventory"), inputInventory, provider);
+        PiglinData.convertInventory(compound.getCompound("OutputInventory"), outputInventory, provider);
+        super.loadAdditional(compound, provider);
     }
 
     public Container getInputInventory() {

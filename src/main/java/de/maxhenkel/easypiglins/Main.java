@@ -6,6 +6,7 @@ import de.maxhenkel.easypiglins.blocks.tileentity.ModTileEntities;
 import de.maxhenkel.easypiglins.events.PiglinEvents;
 import de.maxhenkel.easypiglins.gui.Containers;
 import de.maxhenkel.easypiglins.items.ModItems;
+import de.maxhenkel.easypiglins.loottables.ModLootTables;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
@@ -32,7 +33,7 @@ public class Main {
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(ModTileEntities::onRegisterCapabilities);
 
-        SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class);
+        SERVER_CONFIG = CommonRegistry.registerConfig(MODID, ModConfig.Type.SERVER, ServerConfig.class);
 
         if (FMLEnvironment.dist.isClient()) {
             eventBus.addListener(Main.this::clientSetup);
@@ -43,6 +44,7 @@ public class Main {
         ModTileEntities.init(eventBus);
         Containers.init(eventBus);
         ModCreativeTabs.init(eventBus);
+        ModLootTables.init(eventBus);
     }
 
     @SubscribeEvent

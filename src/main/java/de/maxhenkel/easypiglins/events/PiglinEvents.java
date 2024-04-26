@@ -1,5 +1,6 @@
 package de.maxhenkel.easypiglins.events;
 
+import de.maxhenkel.easypiglins.datacomponents.PiglinData;
 import de.maxhenkel.easypiglins.items.ModItems;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -41,7 +42,7 @@ public class PiglinEvents {
 
         ItemStack stack = new ItemStack(ModItems.PIGLIN.get());
 
-        ModItems.PIGLIN.get().setPiglin(stack, piglin);
+        PiglinData.applyToItem(stack, piglin);
 
         if (player.getInventory().add(stack)) {
             piglin.discard();
