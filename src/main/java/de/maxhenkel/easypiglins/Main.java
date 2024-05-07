@@ -37,6 +37,7 @@ public class Main {
 
         if (FMLEnvironment.dist.isClient()) {
             eventBus.addListener(Main.this::clientSetup);
+            Containers.initClient(eventBus);
         }
 
         ModBlocks.init(eventBus);
@@ -55,7 +56,6 @@ public class Main {
     @OnlyIn(Dist.CLIENT)
     public void clientSetup(FMLClientSetupEvent event) {
         ModTileEntities.clientSetup();
-        Containers.clientSetup();
     }
 
 }

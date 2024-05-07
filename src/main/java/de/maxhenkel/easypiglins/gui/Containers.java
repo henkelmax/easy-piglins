@@ -1,12 +1,12 @@
 package de.maxhenkel.easypiglins.gui;
 
-import de.maxhenkel.corelib.ClientRegistry;
 import de.maxhenkel.easypiglins.Main;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -22,9 +22,13 @@ public class Containers {
         MENU_TYPE_REGISTER.register(eventBus);
     }
 
+    public static void initClient(IEventBus eventBus) {
+        eventBus.addListener(Containers::onRegisterScreens);
+    }
+
     @OnlyIn(Dist.CLIENT)
-    public static void clientSetup() {
-        ClientRegistry.<BartererContainer, BartererScreen>registerScreen(BREEDER_CONTAINER.get(), BartererScreen::new);
+    public static void onRegisterScreens(RegisterMenuScreensEvent containers) {
+        containers.<BartererContainer, BartererScreen>register(BREEDER_CONTAINER.get(), BartererScreen::new);
     }
 
 }
