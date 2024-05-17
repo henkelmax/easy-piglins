@@ -1,1 +1,1 @@
-- Fixed container registration
+- Fixed barterer recipe not working
