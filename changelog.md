@@ -1,1 +1,1 @@
-- Fixed barterer recipe not working
+- Updated to 1.21
