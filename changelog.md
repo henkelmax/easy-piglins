@@ -1,1 +1,1 @@
-- Updated to 1.21
+- Fixed block loot tables
