@@ -1,7 +1,7 @@
 {
-  "block.easy_piglins.barterer": "Обмінник",
-  "itemGroup.easy_piglins": "Easy Piglins",
-  "gui.easy_piglins.input_items": "Вхідні предмети",
-  "gui.easy_piglins.output_items": "Вихідні предмети",
-  "message.easy_piglins.cant_pick_up": "Не можна підібрати агресивних або зайнятих піґлінів"
+  "block.easy_piglins.barterer": "Торговець",
+  "itemGroup.easy_piglins": "Полегшення піґлінів",
+  "gui.easy_piglins.input_items": "Даєте",
+  "gui.easy_piglins.output_items": "Забираєте",
+  "message.easy_piglins.cant_pick_up": "Не можна підбирати агресивних або зайнятих піглінів"
 }
