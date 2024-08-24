@@ -31,6 +31,8 @@ public class PiglinBlockEntityData {
 
     @Nullable
     private FakeWorldTileentity cache;
+    @Nullable
+    private FakeWorldTileentity emptyCache;
     private final CompoundTag nbt;
 
     private PiglinBlockEntityData(CompoundTag nbt) {
@@ -51,13 +53,16 @@ public class PiglinBlockEntityData {
     }
 
     public <T extends FakeWorldTileentity> T getBlockEntity(HolderLookup.Provider provider, @Nullable Level level, Supplier<T> blockEntitySupplier) {
+        if (level == null) {
+            if (emptyCache == null) {
+                emptyCache = blockEntitySupplier.get();
+            }
+            return (T) emptyCache;
+        }
         if (cache == null) {
             cache = blockEntitySupplier.get();
             cache.setFakeWorld(level);
             cache.loadCustomOnly(nbt, provider);
-        }
-        if (level != null && !cache.isFakeWorld()) {
-            cache.setFakeWorld(level);
         }
         return (T) cache;
     }

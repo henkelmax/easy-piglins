@@ -1,1 +1,1 @@
-- Added Turkish translation
+- Fixed block item rendering
