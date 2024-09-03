@@ -1,1 +1,1 @@
-- Fixed block item rendering
+- Added Traditional Chinese translation
