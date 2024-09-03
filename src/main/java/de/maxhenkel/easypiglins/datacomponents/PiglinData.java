@@ -19,6 +19,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 public class PiglinData {
@@ -36,8 +37,7 @@ public class PiglinData {
         }
     };
 
-    @Nullable
-    private Piglin piglin;
+    private WeakReference<Piglin> piglinCache = new WeakReference<>(null);
     private final CompoundTag nbt;
 
     private PiglinData(CompoundTag nbt) {
@@ -72,8 +72,10 @@ public class PiglinData {
     }
 
     public Piglin getCachePiglin(Level level) {
+        Piglin piglin = piglinCache.get();
         if (piglin == null) {
             piglin = createPiglin(level, null);
+            piglinCache = new WeakReference<>(piglin);
         }
         return piglin;
     }
