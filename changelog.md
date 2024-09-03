@@ -1,1 +1,1 @@
-- Added Turkish translation
+- Added Traditional Chinese translation
