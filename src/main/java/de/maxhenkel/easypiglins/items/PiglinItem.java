@@ -1,13 +1,11 @@
 package de.maxhenkel.easypiglins.items;
 
-import de.maxhenkel.corelib.client.CustomRendererItem;
-import de.maxhenkel.corelib.client.ItemRenderer;
 import de.maxhenkel.easypiglins.Main;
 import de.maxhenkel.easypiglins.datacomponents.PiglinData;
-import de.maxhenkel.easypiglins.items.render.PiglinItemRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -28,13 +26,10 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
-public class PiglinItem extends CustomRendererItem {
+public class PiglinItem extends Item {
 
-    private String translationKey;
-
-    public PiglinItem() {
-        super(new Item.Properties().stacksTo(1));
-        translationKey = EntityType.PIGLIN.getDescriptionId();
+    public PiglinItem(Properties properties) {
+        super(properties.stacksTo(1).component(DataComponents.ITEM_NAME, Component.translatable(EntityType.PIGLIN.getDescriptionId())));
 
         DispenserBlock.registerBehavior(this, (source, stack) -> {
             Direction direction = source.state().getValue(DispenserBlock.FACING);
@@ -46,17 +41,6 @@ public class PiglinItem extends CustomRendererItem {
             stack.shrink(1);
             return stack;
         });
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public ItemRenderer createItemRenderer() {
-        return new PiglinItemRenderer();
-    }
-
-    @Override
-    protected String getOrCreateDescriptionId() {
-        return translationKey;
     }
 
     @Override

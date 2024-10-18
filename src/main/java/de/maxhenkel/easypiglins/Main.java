@@ -1,11 +1,14 @@
 package de.maxhenkel.easypiglins;
 
 import de.maxhenkel.corelib.CommonRegistry;
+import de.maxhenkel.corelib.client.CustomRenderItemExtension;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
 import de.maxhenkel.easypiglins.blocks.tileentity.ModTileEntities;
 import de.maxhenkel.easypiglins.events.PiglinEvents;
 import de.maxhenkel.easypiglins.gui.Containers;
 import de.maxhenkel.easypiglins.items.ModItems;
+import de.maxhenkel.easypiglins.items.render.BartererItemRenderer;
+import de.maxhenkel.easypiglins.items.render.PiglinItemRenderer;
 import de.maxhenkel.easypiglins.loottables.ModLootTables;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -16,6 +19,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,6 +41,7 @@ public class Main {
 
         if (FMLEnvironment.dist.isClient()) {
             eventBus.addListener(Main.this::clientSetup);
+            eventBus.addListener(Main.this::onRegisterClientExtensions);
             Containers.initClient(eventBus);
         }
 
@@ -56,6 +61,12 @@ public class Main {
     @OnlyIn(Dist.CLIENT)
     public void clientSetup(FMLClientSetupEvent event) {
         ModTileEntities.clientSetup();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(new CustomRenderItemExtension(new PiglinItemRenderer()), ModItems.PIGLIN);
+        event.registerItem(new CustomRenderItemExtension(new BartererItemRenderer()), ModItems.BARTERER);
     }
 
 }

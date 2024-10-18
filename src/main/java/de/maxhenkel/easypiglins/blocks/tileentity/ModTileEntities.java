@@ -19,7 +19,7 @@ public class ModTileEntities {
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_REGISTER = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, Main.MODID);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BartererTileentity>> BARTERER = BLOCK_ENTITY_REGISTER.register("barterer", () ->
-            BlockEntityType.Builder.of(BartererTileentity::new, ModBlocks.BARTERER.get()).build(null)
+            new BlockEntityType(BartererTileentity::new, ModBlocks.BARTERER.get())
     );
 
     public static void init(IEventBus eventBus) {

@@ -1,14 +1,9 @@
 package de.maxhenkel.easypiglins.blocks;
 
-import de.maxhenkel.corelib.block.IItemBlock;
 import de.maxhenkel.corelib.blockentity.SimpleBlockEntityTicker;
-import de.maxhenkel.corelib.client.CustomRendererBlockItem;
-import de.maxhenkel.corelib.client.ItemRenderer;
 import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.easypiglins.blocks.tileentity.BartererTileentity;
 import de.maxhenkel.easypiglins.gui.BartererContainer;
-import de.maxhenkel.easypiglins.items.PiglinItem;
-import de.maxhenkel.easypiglins.items.render.BartererItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -19,7 +14,6 @@ import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -37,34 +31,23 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-public class BartererBlock extends HorizontalRotatableBlock implements EntityBlock, IItemBlock {
+public class BartererBlock extends HorizontalRotatableBlock implements EntityBlock {
 
-    public BartererBlock() {
-        super(Properties.of().mapColor(MapColor.METAL).strength(2.5F).sound(SoundType.METAL).noOcclusion().lightLevel(value -> 15));
+    public BartererBlock(Properties properties) {
+        super(properties.mapColor(MapColor.METAL).strength(2.5F).sound(SoundType.METAL).noOcclusion().lightLevel(value -> 15));
     }
 
     @Override
-    public Item toItem() {
-        return new CustomRendererBlockItem(this, new Item.Properties()) {
-            @OnlyIn(Dist.CLIENT)
-            @Override
-            public ItemRenderer createItemRenderer() {
-                return new BartererItemRenderer();
-            }
-        };
-    }
-
-    @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
         if (!(tileEntity instanceof BartererTileentity barterer)) {
             return super.useItemOn(heldItem, state, worldIn, pos, player, handIn, hit);
         }
-        if (!barterer.hasPiglin() && heldItem.getItem() instanceof PiglinItem) {
+        if (!barterer.hasPiglin()) {
             barterer.setPiglin(heldItem.copy());
             ItemUtils.decrItemStack(heldItem, player);
             playPiglinSound(worldIn, pos, SoundEvents.PIGLIN_ADMIRING_ITEM);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else if (player.isShiftKeyDown() && barterer.hasPiglin()) {
             ItemStack stack = barterer.removePiglin();
             if (heldItem.isEmpty()) {
@@ -76,7 +59,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
                 }
             }
             playPiglinSound(worldIn, pos, SoundEvents.PIGLIN_JEALOUS);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else {
             player.openMenu(new MenuProvider() {
                 @Override
@@ -90,7 +73,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
                     return new BartererContainer(id, playerInventory, barterer.getInputInventory(), barterer.getOutputInventory());
                 }
             });
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
     }
 

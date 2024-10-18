@@ -3,6 +3,7 @@ package de.maxhenkel.easypiglins.events;
 import de.maxhenkel.easypiglins.datacomponents.PiglinData;
 import de.maxhenkel.easypiglins.items.ModItems;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.piglin.Piglin;
@@ -24,7 +25,7 @@ public class PiglinEvents {
         Piglin piglin = (Piglin) event.getTarget();
         Player player = event.getEntity();
 
-        if (player.level().isClientSide || !player.isShiftKeyDown() || piglin.isBaby()) {
+        if (!(player.level() instanceof ServerLevel serverLevel) || !player.isShiftKeyDown() || piglin.isBaby()) {
             return;
         }
 
@@ -32,9 +33,9 @@ public class PiglinEvents {
             return;
         }
 
-        PiglinAi.angerNearbyPiglins(player, true);
+        PiglinAi.angerNearbyPiglins(serverLevel, player, true);
 
-        if (!PiglinAi.isWearingGold(player) || !piglin.getBrain().isActive(Activity.IDLE)) {
+        if (!PiglinAi.isWearingSafeArmor(player) || !piglin.getBrain().isActive(Activity.IDLE)) {
             piglin.getBrain().setMemoryWithExpiry(MemoryModuleType.ANGRY_AT, player.getUUID(), 600L);
             player.displayClientMessage(Component.translatable("message.easy_piglins.cant_pick_up"), true);
             return;

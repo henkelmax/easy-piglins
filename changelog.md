@@ -1,2 +1,1 @@
-- Added Traditional Chinese translation
-- Fixed memory leak
+- Updated to 1.21.2
