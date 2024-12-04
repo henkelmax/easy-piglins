@@ -7,11 +7,11 @@ import de.maxhenkel.easypiglins.blocks.BartererBlock;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
 import de.maxhenkel.easypiglins.blocks.tileentity.BartererTileentity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
 import net.minecraft.client.renderer.entity.state.PiglinRenderState;
 import net.minecraft.core.Direction;
@@ -23,12 +23,12 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 public class BartererRenderer implements BlockEntityRenderer<BartererTileentity> {
 
     private final Minecraft minecraft;
-    protected BlockEntityRendererProvider.Context context;
+    protected EntityModelSet entityModelSet;
     private PiglinRenderer renderer;
     private PiglinRenderState piglinRenderState;
 
-    public BartererRenderer(BlockEntityRendererProvider.Context context) {
-        this.context = context;
+    public BartererRenderer(EntityModelSet entityModelSet) {
+        this.entityModelSet = entityModelSet;
         minecraft = Minecraft.getInstance();
     }
 

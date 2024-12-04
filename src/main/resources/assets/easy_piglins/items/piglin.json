@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "easy_piglins:item/piglin",
+    "model": {
+      "type": "easy_piglins:piglin"
+    }
+  }
+}

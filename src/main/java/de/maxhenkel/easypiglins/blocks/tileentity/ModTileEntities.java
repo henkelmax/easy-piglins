@@ -32,7 +32,7 @@ public class ModTileEntities {
 
     @OnlyIn(Dist.CLIENT)
     public static void clientSetup() {
-        BlockEntityRenderers.register(ModTileEntities.BARTERER.get(), BartererRenderer::new);
+        BlockEntityRenderers.register(ModTileEntities.BARTERER.get(), c -> new BartererRenderer(c.getModelSet()));
     }
 
 }
