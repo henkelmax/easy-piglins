@@ -8,7 +8,7 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "easy_villagers:copy_block_entity"
+              "function": "easy_piglins:copy_block_entity"
             }
           ],
           "name": "easy_piglins:barterer"

@@ -1,2 +1,1 @@
-- Added Traditional Chinese translation
-- Fixed memory leak
+- Fixed barterer block not dropping any item
