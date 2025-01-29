@@ -1,1 +1,1 @@
-- Updated to 1.21.4
+- Fixed barterer block not dropping any item
