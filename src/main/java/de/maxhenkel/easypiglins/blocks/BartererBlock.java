@@ -4,6 +4,7 @@ import de.maxhenkel.corelib.blockentity.SimpleBlockEntityTicker;
 import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.easypiglins.blocks.tileentity.BartererTileentity;
 import de.maxhenkel.easypiglins.gui.BartererContainer;
+import de.maxhenkel.easypiglins.items.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -43,7 +44,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
         if (!(tileEntity instanceof BartererTileentity barterer)) {
             return super.useItemOn(heldItem, state, worldIn, pos, player, handIn, hit);
         }
-        if (!barterer.hasPiglin()) {
+        if (!barterer.hasPiglin() && heldItem.getItem().equals(ModItems.PIGLIN.get())) {
             barterer.setPiglin(heldItem.copy());
             ItemUtils.decrItemStack(heldItem, player);
             playPiglinSound(worldIn, pos, SoundEvents.PIGLIN_ADMIRING_ITEM);

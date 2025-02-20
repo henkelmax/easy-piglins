@@ -1,1 +1,2 @@
-- Fixed barterer block not dropping any item
+- Fixed barterer consuming gold if the inventory is full
+- Reworked bartering mechanic
