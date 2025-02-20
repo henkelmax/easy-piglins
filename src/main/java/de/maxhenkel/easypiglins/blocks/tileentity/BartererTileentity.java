@@ -2,6 +2,7 @@ package de.maxhenkel.easypiglins.blocks.tileentity;
 
 import de.maxhenkel.corelib.blockentity.IServerTickableBlockEntity;
 import de.maxhenkel.corelib.inventory.ItemListInventory;
+import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.easypiglins.MultiItemStackHandler;
 import de.maxhenkel.easypiglins.blocks.BartererBlock;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
@@ -26,12 +27,18 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class BartererTileentity extends PiglinTileentity implements IServerTickableBlockEntity {
 
     protected NonNullList<ItemStack> inputInventory;
     protected NonNullList<ItemStack> outputInventory;
+    @Nullable
+    protected NonNullList<ItemStack> itemsLeft;
+
+    protected ItemStack barteringItem;
+    protected int barteringTimeLeft;
 
     protected MultiItemStackHandler itemHandler;
     protected ItemStackHandler outputHandler;
@@ -40,6 +47,7 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
         super(ModTileEntities.BARTERER.get(), ModBlocks.BARTERER.get().defaultBlockState(), pos, state);
         inputInventory = NonNullList.withSize(4, ItemStack.EMPTY);
         outputInventory = NonNullList.withSize(4, ItemStack.EMPTY);
+        barteringItem = ItemStack.EMPTY;
 
         itemHandler = new MultiItemStackHandler(inputInventory, outputInventory, BarterSlot::isValid);
         outputHandler = new ItemStackHandler(outputInventory);
@@ -56,47 +64,77 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
             BartererBlock.playPiglinSound(level, worldPosition, SoundEvents.PIGLIN_AMBIENT);
         }
 
-        if (level.getGameTime() % 120 == 0) {
-            if (removeBarteringItem()) {
-                addLoot(p);
+        if (itemsLeft == null) {
+            ItemStack oldBarteringItem = barteringItem;
+            barteringItem = removeBarteringItem();
+            if (!barteringItem.isEmpty()) {
+                if (level.getRandom().nextInt(5) == 0) {
+                    BartererBlock.playPiglinSound(level, getBlockPos(), SoundEvents.PIGLIN_ADMIRING_ITEM);
+                }
+                itemsLeft = generateLoot(p);
+                barteringTimeLeft = 120;
+                setChanged();
+                sync();
+            } else {
+                if (!oldBarteringItem.equals(barteringItem)) {
+                    sync();
+                }
             }
-            sync();
+        }
+
+        if (barteringTimeLeft <= 0) {
+            insertItems();
+        } else {
+            barteringTimeLeft--;
+            setChanged();
         }
     }
 
-    public boolean removeBarteringItem() {
+    public ItemStack removeBarteringItem() {
         for (ItemStack stack : inputInventory) {
             if (stack.isPiglinCurrency() && stack.getCount() >= 1) {
-                stack.shrink(1);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public ItemStack getBarteringItem() {
-        for (ItemStack stack : inputInventory) {
-            if (stack.isPiglinCurrency() && stack.getCount() >= 1) {
-                return stack;
+                return stack.split(1);
             }
         }
         return ItemStack.EMPTY;
     }
 
-    private void addLoot(Piglin piglin) {
+    public ItemStack getRenderBarteringItem() {
+        return barteringItem;
+    }
+
+    private NonNullList<ItemStack> generateLoot(Piglin piglin) {
         LootTable loottable = level.getServer().reloadableRegistries().getLootTable(BuiltInLootTables.PIGLIN_BARTERING);
         List<ItemStack> loot = loottable.getRandomItems((new LootParams.Builder((ServerLevel) level)).withParameter(LootContextParams.THIS_ENTITY, piglin).create(LootContextParamSets.PIGLIN_BARTER));
-        if (level.getRandom().nextInt(5) == 0) {
-            BartererBlock.playPiglinSound(level, getBlockPos(), SoundEvents.PIGLIN_ADMIRING_ITEM);
+        return NonNullList.copyOf(loot);
+    }
+
+    private void insertItems() {
+        if (itemsLeft == null) {
+            return;
         }
-        for (ItemStack drop : loot) {
+
+        NonNullList<ItemStack> newLeft = NonNullList.create();
+        for (ItemStack drop : itemsLeft) {
             for (int i = 0; i < outputHandler.getSlots(); i++) {
                 drop = outputHandler.insertItem(i, drop, false);
                 if (drop.isEmpty()) {
                     break;
                 }
             }
+            if (!drop.isEmpty()) {
+                newLeft.add(drop);
+            }
         }
+
+        if (newLeft.isEmpty()) {
+            itemsLeft = null;
+            sync();
+        } else {
+            itemsLeft = newLeft;
+        }
+
+        setChanged();
     }
 
     @Override
@@ -105,6 +143,14 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
 
         compound.put("InputInventory", ContainerHelper.saveAllItems(new CompoundTag(), inputInventory, true, provider));
         compound.put("OutputInventory", ContainerHelper.saveAllItems(new CompoundTag(), outputInventory, true, provider));
+        if (itemsLeft != null) {
+            ItemUtils.saveItemList(provider, compound, "ItemsLeft", itemsLeft);
+        }
+        if (!barteringItem.isEmpty()) {
+            compound.put("BarteringItem", barteringItem.save(provider, new CompoundTag()));
+        }
+
+        compound.putInt("BarteringTimeLeft", barteringTimeLeft);
     }
 
     @Override
@@ -113,6 +159,20 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
         outputInventory.clear();
         PiglinData.convertInventory(compound.getCompound("InputInventory"), inputInventory, provider);
         PiglinData.convertInventory(compound.getCompound("OutputInventory"), outputInventory, provider);
+
+        if (compound.contains("ItemsLeft")) {
+            itemsLeft = ItemUtils.readItemList(provider, compound, "ItemsLeft", false);
+        } else {
+            itemsLeft = null;
+        }
+        if (compound.contains("BarteringItem")) {
+            barteringItem = ItemStack.parseOptional(provider, compound.getCompound("BarteringItem"));
+        } else {
+            barteringItem = ItemStack.EMPTY;
+        }
+
+        barteringTimeLeft = compound.getInt("BarteringTimeLeft");
+
         super.loadAdditional(compound, provider);
     }
 
