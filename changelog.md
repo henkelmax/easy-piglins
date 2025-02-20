@@ -1,1 +1,2 @@
-- Added Traditional Chinese translation
+- Fixed barterer consuming gold if the inventory is full
+- Reworked bartering mechanic

@@ -55,7 +55,7 @@ public class BartererRenderer implements BlockEntityRenderer<BartererTileentity>
         Piglin piglin = barterer.getPiglinEntity();
         if (piglin != null) {
             matrixStack.pushPose();
-            piglin.setItemInHand(InteractionHand.OFF_HAND, barterer.getBarteringItem());
+            piglin.setItemInHand(InteractionHand.OFF_HAND, barterer.getRenderBarteringItem());
             matrixStack.translate(0.5D, 1D / 16D, 0.5D);
             matrixStack.mulPose(Axis.YP.rotationDegrees(-direction.toYRot()));
             matrixStack.translate(0D, 0D, -4D / 16D);
