@@ -9,6 +9,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Optional;
+
 public class PiglinTileentity extends FakeWorldTileentity {
 
     private ItemStack piglin;
@@ -65,15 +67,18 @@ public class PiglinTileentity extends FakeWorldTileentity {
         super.saveAdditional(compound, provider);
 
         if (hasPiglin()) {
-            compound.put("Piglin", getPiglin().saveOptional(provider));
+            ItemStack piglinItem = getPiglin();
+            if (!piglinItem.isEmpty()) {
+                compound.put("Piglin", piglinItem.save(provider));
+            }
         }
     }
 
     @Override
     protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        if (compound.contains("Piglin")) {
-            CompoundTag comp = compound.getCompound("Piglin");
-            piglin = PiglinData.convert(provider, comp);
+        Optional<ItemStack> optionalPiglinItem = compound.getCompound("Piglin").map(t -> PiglinData.convert(provider, t));
+        if (optionalPiglinItem.isPresent()) {
+            piglin = optionalPiglinItem.get();
             piglinEntity = null;
         } else {
             removePiglin();

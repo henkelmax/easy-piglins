@@ -9,16 +9,16 @@ import de.maxhenkel.easypiglins.blocks.tileentity.BartererTileentity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
 import net.minecraft.client.renderer.entity.state.PiglinRenderState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraft.world.phys.Vec3;
 
 public class BartererRenderer implements BlockEntityRenderer<BartererTileentity> {
 
@@ -33,7 +33,7 @@ public class BartererRenderer implements BlockEntityRenderer<BartererTileentity>
     }
 
     @Override
-    public void render(BartererTileentity barterer, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(BartererTileentity barterer, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn, Vec3 vec) {
         renderBlock(matrixStack, buffer, combinedLightIn, combinedOverlayIn);
         renderWithoutBlock(barterer, partialTicks, matrixStack, buffer, combinedLightIn, combinedOverlayIn);
     }
@@ -74,7 +74,19 @@ public class BartererRenderer implements BlockEntityRenderer<BartererTileentity>
         BlockState state = ModBlocks.BARTERER.get().defaultBlockState();
         int color = minecraft.getBlockColors().getColor(state, null, null, 0);
         BlockRenderDispatcher dispatcher = minecraft.getBlockRenderer();
-        dispatcher.getModelRenderer().renderModel(matrixStack.last(), buffer.getBuffer(RenderType.cutoutMipped()), state, dispatcher.getBlockModel(state), RenderUtils.getRed(color), RenderUtils.getGreen(color), RenderUtils.getBlue(color), combinedLight, combinedOverlay, ModelData.EMPTY, RenderType.cutoutMipped());
+        dispatcher.getModelRenderer().renderModel(
+                matrixStack.last(),
+                buffer,
+                dispatcher.getBlockModel(state),
+                RenderUtils.getRedFloat(color),
+                RenderUtils.getGreenFloat(color),
+                RenderUtils.getBlueFloat(color),
+                combinedLight,
+                combinedOverlay,
+                minecraft.level,
+                BlockPos.ZERO,
+                state
+        );
     }
 
 }

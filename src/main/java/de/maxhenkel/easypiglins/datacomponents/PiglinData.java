@@ -4,11 +4,8 @@ import com.mojang.serialization.Codec;
 import de.maxhenkel.easypiglins.items.ModItems;
 import de.maxhenkel.easypiglins.items.PiglinItem;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -21,6 +18,7 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
+import java.util.Optional;
 
 public class PiglinData {
 
@@ -114,21 +112,8 @@ public class PiglinData {
         return getOrCreate(stack).getCachePiglin(level);
     }
 
-    public static void convertInventory(CompoundTag tag, NonNullList<ItemStack> stacks, HolderLookup.Provider provider) {
-        ListTag listtag = tag.getList("Items", Tag.TAG_COMPOUND);
-
-        for (int i = 0; i < listtag.size(); i++) {
-            CompoundTag itemTag = listtag.getCompound(i);
-            int pos = itemTag.getByte("Slot") & 255;
-            if (pos < stacks.size()) {
-                ItemStack convert = convert(provider, itemTag);
-                stacks.set(pos, convert);
-            }
-        }
-    }
-
     public static ItemStack convert(HolderLookup.Provider provider, CompoundTag itemCompound) {
-        ItemStack stack = ItemStack.parseOptional(provider, itemCompound);
+        ItemStack stack = ItemStack.parse(provider, itemCompound).orElse(ItemStack.EMPTY);
         if (stack.isEmpty()) {
             return stack;
         }
@@ -138,14 +123,16 @@ public class PiglinData {
         if (stack.has(ModItems.PIGLIN_DATA_COMPONENT)) {
             return stack;
         }
-        if (!itemCompound.contains("tag", Tag.TAG_COMPOUND)) {
+        Optional<CompoundTag> tagOptional = itemCompound.getCompound("tag");
+        if (tagOptional.isEmpty()) {
             return stack;
         }
-        CompoundTag tag = itemCompound.getCompound("tag");
-        if (!tag.contains("Piglin", Tag.TAG_COMPOUND)) {
+        CompoundTag tag = tagOptional.get();
+        Optional<CompoundTag> piglinTagOptional = tag.getCompound("Piglin");
+        if (piglinTagOptional.isEmpty()) {
             return stack;
         }
-        CompoundTag piglinTag = tag.getCompound("Piglin");
+        CompoundTag piglinTag = piglinTagOptional.get();
         PiglinData piglinData = PiglinData.of(piglinTag);
         stack.set(ModItems.PIGLIN_DATA_COMPONENT, piglinData);
         return stack;
@@ -164,11 +151,12 @@ public class PiglinData {
             return;
         }
         CompoundTag customTag = customData.copyTag();
-        if (!customTag.contains("Piglin", Tag.TAG_COMPOUND)) {
+        Optional<CompoundTag> piglinTagOptional = customTag.getCompound("Piglin");
+        if (piglinTagOptional.isEmpty()) {
             setEmptyPiglinTag(stack);
             return;
         }
-        CompoundTag piglinTag = customTag.getCompound("Piglin");
+        CompoundTag piglinTag = piglinTagOptional.get();
         customTag.remove("Piglin");
         if (customTag.isEmpty()) {
             stack.remove(DataComponents.CUSTOM_DATA);

@@ -6,7 +6,6 @@ import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.easypiglins.MultiItemStackHandler;
 import de.maxhenkel.easypiglins.blocks.BartererBlock;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
-import de.maxhenkel.easypiglins.datacomponents.PiglinData;
 import de.maxhenkel.easypiglins.gui.BarterSlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -157,21 +156,16 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         inputInventory.clear();
         outputInventory.clear();
-        PiglinData.convertInventory(compound.getCompound("InputInventory"), inputInventory, provider);
-        PiglinData.convertInventory(compound.getCompound("OutputInventory"), outputInventory, provider);
+        compound.getCompound("InputInventory").ifPresent(tag -> ContainerHelper.loadAllItems(tag, inputInventory, provider));
+        compound.getCompound("OutputInventory").ifPresent(tag -> ContainerHelper.loadAllItems(tag, outputInventory, provider));
 
         if (compound.contains("ItemsLeft")) {
             itemsLeft = ItemUtils.readItemList(provider, compound, "ItemsLeft", false);
         } else {
             itemsLeft = null;
         }
-        if (compound.contains("BarteringItem")) {
-            barteringItem = ItemStack.parseOptional(provider, compound.getCompound("BarteringItem"));
-        } else {
-            barteringItem = ItemStack.EMPTY;
-        }
-
-        barteringTimeLeft = compound.getInt("BarteringTimeLeft");
+        barteringItem = compound.getCompound("BarteringItem").flatMap(tag -> ItemStack.parse(provider, tag)).orElse(ItemStack.EMPTY);
+        barteringTimeLeft = compound.getIntOr("BarteringTimeLeft", 0);
 
         super.loadAdditional(compound, provider);
     }
