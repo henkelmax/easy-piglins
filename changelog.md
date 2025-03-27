@@ -1,2 +1,1 @@
-- Fixed barterer consuming gold if the inventory is full
-- Reworked bartering mechanic
+- Fixed potential crash

@@ -6,7 +6,6 @@ import de.maxhenkel.easypiglins.blocks.tileentity.BartererTileentity;
 import de.maxhenkel.easypiglins.blocks.tileentity.render.BartererRenderer;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -16,8 +15,8 @@ import java.util.function.Supplier;
 @OnlyIn(Dist.CLIENT)
 public class BartererSpecialRenderer extends ItemSpecialRendererBase<BartererTileentity> {
 
-    public BartererSpecialRenderer(EntityModelSet modelSet, Supplier<BlockState> blockSupplier, Supplier<BartererTileentity> blockEntitySupplier) {
-        super(modelSet, blockSupplier, blockEntitySupplier);
+    public BartererSpecialRenderer(EntityModelSet modelSet, Supplier<BlockState> blockSupplier) {
+        super(modelSet, blockSupplier, BartererTileentity.class);
         renderer = new BartererRenderer(modelSet);
     }
 
@@ -37,7 +36,7 @@ public class BartererSpecialRenderer extends ItemSpecialRendererBase<BartererTil
 
         @Override
         public SpecialModelRenderer<?> bake(EntityModelSet modelSet) {
-            return new BartererSpecialRenderer(modelSet, () -> ModBlocks.BARTERER.get().defaultBlockState(), () -> new BartererTileentity(BlockPos.ZERO, ModBlocks.BARTERER.get().defaultBlockState()));
+            return new BartererSpecialRenderer(modelSet, () -> ModBlocks.BARTERER.get().defaultBlockState());
         }
     }
 }
