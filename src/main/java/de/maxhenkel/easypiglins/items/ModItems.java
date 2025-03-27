@@ -2,7 +2,6 @@ package de.maxhenkel.easypiglins.items;
 
 import de.maxhenkel.easypiglins.Main;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
-import de.maxhenkel.easypiglins.datacomponents.PiglinBlockEntityData;
 import de.maxhenkel.easypiglins.datacomponents.PiglinData;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,7 +20,6 @@ public class ModItems {
 
     private static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTER = DeferredRegister.create(BuiltInRegistries.DATA_COMPONENT_TYPE, Main.MODID);
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<PiglinData>> PIGLIN_DATA_COMPONENT = DATA_COMPONENT_TYPE_REGISTER.register("piglin", () -> DataComponentType.<PiglinData>builder().persistent(PiglinData.CODEC).networkSynchronized(PiglinData.STREAM_CODEC).build());
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<PiglinBlockEntityData>> BLOCK_ENTITY_DATA_COMPONENT = DATA_COMPONENT_TYPE_REGISTER.register("block_entity", () -> DataComponentType.<PiglinBlockEntityData>builder().networkSynchronized(PiglinBlockEntityData.STREAM_CODEC).build());
 
     public static void init(IEventBus eventBus) {
         ITEM_REGISTER.register(eventBus);

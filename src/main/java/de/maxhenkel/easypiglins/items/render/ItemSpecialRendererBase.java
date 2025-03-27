@@ -2,7 +2,7 @@ package de.maxhenkel.easypiglins.items.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.easypiglins.blocks.tileentity.FakeWorldTileentity;
-import de.maxhenkel.easypiglins.datacomponents.PiglinBlockEntityData;
+import de.maxhenkel.easypiglins.items.BlockItemDataCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -25,11 +25,11 @@ public class ItemSpecialRendererBase<T extends FakeWorldTileentity> implements S
 
     protected BlockEntityRenderer<T> renderer;
     protected Supplier<BlockState> blockSupplier;
-    protected Supplier<T> blockEntitySupplier;
+    protected Class<T> typeClass;
 
-    public ItemSpecialRendererBase(EntityModelSet modelSet, Supplier<BlockState> blockSupplier, Supplier<T> blockEntitySupplier) {
+    public ItemSpecialRendererBase(EntityModelSet modelSet, Supplier<BlockState> blockSupplier, Class<T> typeClass) {
         this.blockSupplier = blockSupplier;
-        this.blockEntitySupplier = blockEntitySupplier;
+        this.typeClass = typeClass;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ItemSpecialRendererBase<T extends FakeWorldTileentity> implements S
     @Nullable
     @Override
     public T extractArgument(ItemStack stack) {
-        return PiglinBlockEntityData.getAndStoreBlockEntity(stack, minecraft.level.registryAccess(), minecraft.level, blockEntitySupplier);
+        return BlockItemDataCache.get(minecraft.level, stack, typeClass);
     }
 }
 
