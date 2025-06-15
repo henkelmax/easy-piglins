@@ -1,6 +1,7 @@
 package de.maxhenkel.easypiglins.blocks.tileentity;
 
 import de.maxhenkel.corelib.blockentity.IServerTickableBlockEntity;
+import de.maxhenkel.corelib.codec.ValueInputOutputUtils;
 import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.easypiglins.MultiItemStackHandler;
@@ -8,16 +9,16 @@ import de.maxhenkel.easypiglins.blocks.BartererBlock;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
 import de.maxhenkel.easypiglins.gui.BarterSlot;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -137,37 +138,42 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        super.saveAdditional(compound, provider);
+    protected void saveAdditional(ValueOutput valueOutput) {
+        super.saveAdditional(valueOutput);
 
-        compound.put("InputInventory", ContainerHelper.saveAllItems(new CompoundTag(), inputInventory, true, provider));
-        compound.put("OutputInventory", ContainerHelper.saveAllItems(new CompoundTag(), outputInventory, true, provider));
+        CompoundTag inputInv = new CompoundTag();
+        ItemUtils.saveInventory(inputInv, "Items", inputInventory);
+        ValueInputOutputUtils.setTag(valueOutput, "InputInventory", inputInv);
+
+        CompoundTag outputInv = new CompoundTag();
+        ItemUtils.saveInventory(outputInv, "Items", outputInventory);
+        ValueInputOutputUtils.setTag(valueOutput, "OutputInventory", outputInv);
+
         if (itemsLeft != null) {
-            ItemUtils.saveItemList(provider, compound, "ItemsLeft", itemsLeft);
+            CompoundTag il = new CompoundTag();
+            ItemUtils.saveItemList(il, "ItemsLeft", itemsLeft);
+            valueOutput.store(il);
         }
         if (!barteringItem.isEmpty()) {
-            compound.put("BarteringItem", barteringItem.save(provider, new CompoundTag()));
+            valueOutput.store("BarteringItem", ItemStack.CODEC, barteringItem);
         }
 
-        compound.putInt("BarteringTimeLeft", barteringTimeLeft);
+        valueOutput.putInt("BarteringTimeLeft", barteringTimeLeft);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+    protected void loadAdditional(ValueInput valueInput) {
         inputInventory.clear();
         outputInventory.clear();
-        compound.getCompound("InputInventory").ifPresent(tag -> ContainerHelper.loadAllItems(tag, inputInventory, provider));
-        compound.getCompound("OutputInventory").ifPresent(tag -> ContainerHelper.loadAllItems(tag, outputInventory, provider));
+        ValueInputOutputUtils.getTag(valueInput, "InputInventory").ifPresent(t -> ItemUtils.readItemList(t, "Items", inputInventory));
+        ValueInputOutputUtils.getTag(valueInput, "OutputInventory").ifPresent(t -> ItemUtils.readItemList(t, "Items", outputInventory));
 
-        if (compound.contains("ItemsLeft")) {
-            itemsLeft = ItemUtils.readItemList(provider, compound, "ItemsLeft", false);
-        } else {
-            itemsLeft = null;
-        }
-        barteringItem = compound.getCompound("BarteringItem").flatMap(tag -> ItemStack.parse(provider, tag)).orElse(ItemStack.EMPTY);
-        barteringTimeLeft = compound.getIntOr("BarteringTimeLeft", 0);
+        itemsLeft = ValueInputOutputUtils.getTag(valueInput, "ItemsLeft").map(t -> ItemUtils.readItemList(t, "ItemsLeft", false)).orElse(null);
 
-        super.loadAdditional(compound, provider);
+        barteringItem = valueInput.read("BarteringItem", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+        barteringTimeLeft = valueInput.getIntOr("BarteringTimeLeft", 0);
+
+        super.loadAdditional(valueInput);
     }
 
     public Container getInputInventory() {

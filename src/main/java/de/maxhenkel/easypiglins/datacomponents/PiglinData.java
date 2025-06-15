@@ -1,9 +1,11 @@
 package de.maxhenkel.easypiglins.datacomponents;
 
 import com.mojang.serialization.Codec;
+import de.maxhenkel.corelib.codec.CodecUtils;
+import de.maxhenkel.corelib.codec.ValueInputOutputUtils;
+import de.maxhenkel.easypiglins.Main;
 import de.maxhenkel.easypiglins.items.ModItems;
 import de.maxhenkel.easypiglins.items.PiglinItem;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
@@ -47,9 +50,9 @@ public class PiglinData {
     }
 
     public static PiglinData of(Piglin piglin) {
-        CompoundTag nbt = new CompoundTag();
-        piglin.addAdditionalSaveData(nbt);
-        return new PiglinData(nbt);
+        TagValueOutput valueOutput = ValueInputOutputUtils.createValueOutput(piglin, piglin.registryAccess());
+        piglin.addAdditionalSaveData(valueOutput);
+        return new PiglinData(ValueInputOutputUtils.toTag(valueOutput));
     }
 
     @Nullable
@@ -80,7 +83,7 @@ public class PiglinData {
 
     public Piglin createPiglin(Level level, @Nullable ItemStack stack) {
         Piglin v = new Piglin(EntityType.PIGLIN, level);
-        v.readAdditionalSaveData(nbt);
+        v.readAdditionalSaveData(ValueInputOutputUtils.createValueInput(Main.MODID, level.registryAccess(), nbt));
         if (stack != null) {
             Component customName = stack.get(DataComponents.CUSTOM_NAME);
             if (customName != null) {
@@ -112,8 +115,8 @@ public class PiglinData {
         return getOrCreate(stack).getCachePiglin(level);
     }
 
-    public static ItemStack convert(HolderLookup.Provider provider, CompoundTag itemCompound) {
-        ItemStack stack = ItemStack.parse(provider, itemCompound).orElse(ItemStack.EMPTY);
+    public static ItemStack convert(CompoundTag itemCompound) {
+        ItemStack stack = CodecUtils.fromNBT(ItemStack.CODEC, itemCompound).orElse(ItemStack.EMPTY);
         if (stack.isEmpty()) {
             return stack;
         }

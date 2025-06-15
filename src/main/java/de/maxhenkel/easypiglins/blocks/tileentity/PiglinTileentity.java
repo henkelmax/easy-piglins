@@ -1,13 +1,14 @@
 package de.maxhenkel.easypiglins.blocks.tileentity;
 
+import de.maxhenkel.corelib.codec.ValueInputOutputUtils;
 import de.maxhenkel.easypiglins.datacomponents.PiglinData;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.Optional;
 
@@ -63,27 +64,27 @@ public class PiglinTileentity extends FakeWorldTileentity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        super.saveAdditional(compound, provider);
+    protected void saveAdditional(ValueOutput valueOutput) {
+        super.saveAdditional(valueOutput);
 
         if (hasPiglin()) {
             ItemStack piglinItem = getPiglin();
             if (!piglinItem.isEmpty()) {
-                compound.put("Piglin", piglinItem.save(provider));
+                valueOutput.store("Piglin", ItemStack.CODEC, piglinItem);
             }
         }
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        Optional<ItemStack> optionalPiglinItem = compound.getCompound("Piglin").map(t -> PiglinData.convert(provider, t));
+    protected void loadAdditional(ValueInput valueInput) {
+        Optional<ItemStack> optionalPiglinItem = ValueInputOutputUtils.getTag(valueInput, "Piglin").map(PiglinData::convert);
         if (optionalPiglinItem.isPresent()) {
             piglin = optionalPiglinItem.get();
             piglinEntity = null;
         } else {
             removePiglin();
         }
-        super.loadAdditional(compound, provider);
+        super.loadAdditional(valueInput);
     }
 
 }

@@ -16,6 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
+
+import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderState> {
@@ -35,6 +38,11 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
             return;
         }
         getRenderer().render(piglinRenderState, stack, bufferSource, light);
+    }
+
+    @Override
+    public void getExtents(Set<Vector3f> vecs) {
+
     }
 
     @Nullable
