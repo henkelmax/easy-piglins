@@ -26,7 +26,6 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
     protected static final Minecraft minecraft = Minecraft.getInstance();
 
     private PiglinRenderer renderer;
-    private PiglinRenderState piglinRenderState;
 
     public PiglinSpecialRenderer(EntityModelSet modelSet) {
 
@@ -52,9 +51,7 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
         if (renderer == null) {
             renderer = (PiglinRenderer) minecraft.getEntityRenderDispatcher().getRenderer(cachePiglin);
         }
-        if (piglinRenderState == null) {
-            piglinRenderState = renderer.createRenderState();
-        }
+        PiglinRenderState piglinRenderState = renderer.createRenderState();
         renderer.extractRenderState(cachePiglin, piglinRenderState, 0F);
         return piglinRenderState;
     }

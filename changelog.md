@@ -1,1 +1,1 @@
-- Updated to 1.21.6
+- Fixed piglins not rendering properly in inventory
