@@ -1,1 +1,2 @@
-- Fixed piglins not rendering properly in inventory
+- Fixed issues with block inventory saving
+- Fixed some trading items getting lost when reloading

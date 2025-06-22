@@ -1,7 +1,6 @@
 package de.maxhenkel.easypiglins.blocks.tileentity;
 
 import de.maxhenkel.corelib.blockentity.IServerTickableBlockEntity;
-import de.maxhenkel.corelib.codec.ValueInputOutputUtils;
 import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.corelib.item.ItemUtils;
 import de.maxhenkel.easypiglins.MultiItemStackHandler;
@@ -10,7 +9,6 @@ import de.maxhenkel.easypiglins.blocks.ModBlocks;
 import de.maxhenkel.easypiglins.gui.BarterSlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Container;
@@ -141,18 +139,11 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     protected void saveAdditional(ValueOutput valueOutput) {
         super.saveAdditional(valueOutput);
 
-        CompoundTag inputInv = new CompoundTag();
-        ItemUtils.saveInventory(inputInv, "Items", inputInventory);
-        ValueInputOutputUtils.setTag(valueOutput, "InputInventory", inputInv);
-
-        CompoundTag outputInv = new CompoundTag();
-        ItemUtils.saveInventory(outputInv, "Items", outputInventory);
-        ValueInputOutputUtils.setTag(valueOutput, "OutputInventory", outputInv);
+        ItemUtils.saveInventory(valueOutput.child("InputInventory"), "Items", inputInventory);
+        ItemUtils.saveInventory(valueOutput.child("OutputInventory"), "Items", outputInventory);
 
         if (itemsLeft != null) {
-            CompoundTag il = new CompoundTag();
-            ItemUtils.saveItemList(il, "ItemsLeft", itemsLeft);
-            valueOutput.store(il);
+            ItemUtils.saveItemList(valueOutput, "ItemsLeft", itemsLeft);
         }
         if (!barteringItem.isEmpty()) {
             valueOutput.store("BarteringItem", ItemStack.CODEC, barteringItem);
@@ -165,10 +156,10 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     protected void loadAdditional(ValueInput valueInput) {
         inputInventory.clear();
         outputInventory.clear();
-        ValueInputOutputUtils.getTag(valueInput, "InputInventory").ifPresent(t -> ItemUtils.readItemList(t, "Items", inputInventory));
-        ValueInputOutputUtils.getTag(valueInput, "OutputInventory").ifPresent(t -> ItemUtils.readItemList(t, "Items", outputInventory));
+        ItemUtils.readItemList(valueInput.childOrEmpty("InputInventory"), "Items", inputInventory);
+        ItemUtils.readItemList(valueInput.childOrEmpty("OutputInventory"), "Items", outputInventory);
 
-        itemsLeft = ValueInputOutputUtils.getTag(valueInput, "ItemsLeft").map(t -> ItemUtils.readItemList(t, "ItemsLeft", false)).orElse(null);
+        itemsLeft = ItemUtils.readItemList(valueInput, "ItemsLeft", false);
 
         barteringItem = valueInput.read("BarteringItem", ItemStack.CODEC).orElse(ItemStack.EMPTY);
         barteringTimeLeft = valueInput.getIntOr("BarteringTimeLeft", 0);
