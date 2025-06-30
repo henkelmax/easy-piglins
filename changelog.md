@@ -1,2 +1,1 @@
-- Fixed issues with block inventory saving
-- Fixed some trading items getting lost when reloading
+- Updated to 1.21.7
