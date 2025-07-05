@@ -6,26 +6,20 @@ import de.maxhenkel.easypiglins.blocks.tileentity.ModTileEntities;
 import de.maxhenkel.easypiglins.events.PiglinEvents;
 import de.maxhenkel.easypiglins.gui.Containers;
 import de.maxhenkel.easypiglins.items.ModItems;
-import de.maxhenkel.easypiglins.items.render.BartererSpecialRenderer;
-import de.maxhenkel.easypiglins.items.render.PiglinSpecialRenderer;
 import de.maxhenkel.easypiglins.loottables.ModLootTables;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(Main.MODID)
-public class Main {
+@Mod(EasyPiglinsMod.MODID)
+@EventBusSubscriber(modid = EasyPiglinsMod.MODID)
+public class EasyPiglinsMod {
 
     public static final String MODID = "easy_piglins";
 
@@ -33,17 +27,10 @@ public class Main {
 
     public static ServerConfig SERVER_CONFIG;
 
-    public Main(IEventBus eventBus) {
-        eventBus.addListener(this::commonSetup);
+    public EasyPiglinsMod(IEventBus eventBus) {
         eventBus.addListener(ModTileEntities::onRegisterCapabilities);
 
         SERVER_CONFIG = CommonRegistry.registerConfig(MODID, ModConfig.Type.SERVER, ServerConfig.class);
-
-        if (FMLEnvironment.dist.isClient()) {
-            eventBus.addListener(Main.this::clientSetup);
-            eventBus.addListener(Main.this::registerItemModels);
-            Containers.initClient(eventBus);
-        }
 
         ModBlocks.init(eventBus);
         ModItems.init(eventBus);
@@ -54,20 +41,8 @@ public class Main {
     }
 
     @SubscribeEvent
-    public void commonSetup(FMLCommonSetupEvent event) {
+    static void commonSetup(FMLCommonSetupEvent event) {
         NeoForge.EVENT_BUS.register(new PiglinEvents());
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void clientSetup(FMLClientSetupEvent event) {
-        ModTileEntities.clientSetup();
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void registerItemModels(RegisterSpecialModelRendererEvent event) {
-        event.register(ResourceLocation.fromNamespaceAndPath(MODID, "barterer"), BartererSpecialRenderer.Unbaked.MAP_CODEC);
-
-        event.register(ResourceLocation.fromNamespaceAndPath(MODID, "piglin"), PiglinSpecialRenderer.Unbaked.MAP_CODEC);
     }
 
 }

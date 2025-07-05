@@ -1,6 +1,6 @@
 package de.maxhenkel.easypiglins.items;
 
-import de.maxhenkel.easypiglins.Main;
+import de.maxhenkel.easypiglins.EasyPiglinsMod;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
 import de.maxhenkel.easypiglins.datacomponents.PiglinData;
 import net.minecraft.core.component.DataComponentType;
@@ -13,12 +13,12 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModItems {
 
-    private static final DeferredRegister.Items ITEM_REGISTER = DeferredRegister.createItems(Main.MODID);
+    private static final DeferredRegister.Items ITEM_REGISTER = DeferredRegister.createItems(EasyPiglinsMod.MODID);
 
     public static final DeferredHolder<Item, PiglinItem> PIGLIN = ITEM_REGISTER.registerItem("piglin", PiglinItem::new);
     public static final DeferredHolder<Item, BlockItem> BARTERER = ITEM_REGISTER.registerSimpleBlockItem(ModBlocks.BARTERER);
 
-    private static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTER = DeferredRegister.create(BuiltInRegistries.DATA_COMPONENT_TYPE, Main.MODID);
+    private static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTER = DeferredRegister.create(BuiltInRegistries.DATA_COMPONENT_TYPE, EasyPiglinsMod.MODID);
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<PiglinData>> PIGLIN_DATA_COMPONENT = DATA_COMPONENT_TYPE_REGISTER.register("piglin", () -> DataComponentType.<PiglinData>builder().persistent(PiglinData.CODEC).networkSynchronized(PiglinData.STREAM_CODEC).build());
 
     public static void init(IEventBus eventBus) {

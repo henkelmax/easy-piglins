@@ -13,14 +13,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.Set;
 
-@OnlyIn(Dist.CLIENT)
 public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderState> {
 
     protected static final Minecraft minecraft = Minecraft.getInstance();
@@ -67,7 +64,6 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
         return (PiglinRenderer) minecraft.getEntityRenderDispatcher().renderers.get(EntityType.PIGLIN);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class Unbaked implements SpecialModelRenderer.Unbaked {
 
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);

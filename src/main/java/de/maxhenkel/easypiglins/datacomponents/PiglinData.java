@@ -3,7 +3,7 @@ package de.maxhenkel.easypiglins.datacomponents;
 import com.mojang.serialization.Codec;
 import de.maxhenkel.corelib.codec.CodecUtils;
 import de.maxhenkel.corelib.codec.ValueInputOutputUtils;
-import de.maxhenkel.easypiglins.Main;
+import de.maxhenkel.easypiglins.EasyPiglinsMod;
 import de.maxhenkel.easypiglins.items.ModItems;
 import de.maxhenkel.easypiglins.items.PiglinItem;
 import net.minecraft.core.component.DataComponents;
@@ -83,7 +83,7 @@ public class PiglinData {
 
     public Piglin createPiglin(Level level, @Nullable ItemStack stack) {
         Piglin v = new Piglin(EntityType.PIGLIN, level);
-        v.readAdditionalSaveData(ValueInputOutputUtils.createValueInput(Main.MODID, level.registryAccess(), nbt));
+        v.readAdditionalSaveData(ValueInputOutputUtils.createValueInput(EasyPiglinsMod.MODID, level.registryAccess(), nbt));
         if (stack != null) {
             Component customName = stack.get(DataComponents.CUSTOM_NAME);
             if (customName != null) {

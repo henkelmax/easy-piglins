@@ -1,8 +1,7 @@
 package de.maxhenkel.easypiglins.items;
 
-import de.maxhenkel.easypiglins.Main;
+import de.maxhenkel.easypiglins.EasyPiglinsMod;
 import de.maxhenkel.easypiglins.datacomponents.PiglinData;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -22,8 +21,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 
 public class PiglinItem extends Item {
@@ -70,15 +68,15 @@ public class PiglinItem extends Item {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public Component getName(ItemStack stack) {
-        Level world = Minecraft.getInstance().level;
-        if (world == null) {
-            return super.getName(stack);
-        } else {
-            return PiglinData.getCachePiglin(stack, world).getDisplayName();
+        if (FMLEnvironment.dist.isClient()) {
+            Component clientName = ClientPiglinItemUtils.getClientName(stack);
+            if (clientName != null) {
+                return clientName;
+            }
         }
+        return super.getName(stack);
     }
 
     @Override
@@ -87,7 +85,7 @@ public class PiglinItem extends Item {
         if (!(entity instanceof Player player)) {
             return;
         }
-        if (!Main.SERVER_CONFIG.piglinInventorySounds.get()) {
+        if (!EasyPiglinsMod.SERVER_CONFIG.piglinInventorySounds.get()) {
             return;
         }
         if (level.getGameTime() % 20 != 0) {
