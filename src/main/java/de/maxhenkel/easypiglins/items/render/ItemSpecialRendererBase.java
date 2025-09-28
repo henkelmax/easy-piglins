@@ -48,9 +48,6 @@ public class ItemSpecialRendererBase<T extends FakeWorldTileentity, U extends Bl
         }
         renderState.lightCoords = light;
         renderer.extractRenderState(blockEntity, renderState, 0F, Vec3.ZERO, null);
-        if (renderState.lightCoords == 0) {
-            renderState.lightCoords = light;
-        }
         renderState.lightCoords = light;
         renderer.submit(renderState, stack, collector, cameraRenderState);
     }
