@@ -4,10 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.easypiglins.blocks.tileentity.FakeWorldTileentity;
 import de.maxhenkel.easypiglins.items.BlockItemDataCache;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,26 +19,40 @@ import org.joml.Vector3f;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class ItemSpecialRendererBase<T extends FakeWorldTileentity> implements SpecialModelRenderer<T> {
+public class ItemSpecialRendererBase<T extends FakeWorldTileentity, U extends BlockEntityRenderState> implements SpecialModelRenderer<T> {
 
     protected static final Minecraft minecraft = Minecraft.getInstance();
 
-    protected BlockEntityRenderer<T> renderer;
+    protected BlockEntityRenderer<T, U> renderer;
     protected Supplier<BlockState> blockSupplier;
     protected Class<T> typeClass;
+    @Nullable
+    protected U renderState;
+    protected CameraRenderState cameraRenderState;
 
-    public ItemSpecialRendererBase(EntityModelSet modelSet, Supplier<BlockState> blockSupplier, Class<T> typeClass) {
+    public ItemSpecialRendererBase(Supplier<BlockState> blockSupplier, Class<T> typeClass) {
         this.blockSupplier = blockSupplier;
         this.typeClass = typeClass;
+        cameraRenderState = new CameraRenderState();
+        cameraRenderState.initialized = true;
     }
 
     @Override
-    public void render(@Nullable T blockEntity, ItemDisplayContext itemDisplayContext, PoseStack stack, MultiBufferSource bufferSource, int light, int overlay, boolean b) {
-        minecraft.getBlockRenderer().renderSingleBlock(blockSupplier.get(), stack, bufferSource, light, overlay);
+    public void submit(@Nullable T blockEntity, ItemDisplayContext context, PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean b) {
+        collector.submitBlock(stack, blockSupplier.get(), light, overlay, 0xFFFFFFFF);
         if (blockEntity == null) {
             return;
         }
-        renderer.render(blockEntity, 0F, stack, bufferSource, light, overlay, Vec3.ZERO);
+        if (renderState == null) {
+            renderState = renderer.createRenderState();
+        }
+        renderState.lightCoords = light;
+        renderer.extractRenderState(blockEntity, renderState, 0F, Vec3.ZERO, null);
+        if (renderState.lightCoords == 0) {
+            renderState.lightCoords = light;
+        }
+        renderState.lightCoords = light;
+        renderer.submit(renderState, stack, collector, cameraRenderState);
     }
 
     @Override

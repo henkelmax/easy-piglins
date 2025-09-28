@@ -4,11 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 import de.maxhenkel.easypiglins.datacomponents.PiglinData;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
 import net.minecraft.client.renderer.entity.state.PiglinRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -22,18 +22,22 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
 
     protected static final Minecraft minecraft = Minecraft.getInstance();
 
+    @Nullable
     private PiglinRenderer renderer;
+    private final CameraRenderState cameraRenderState;
 
-    public PiglinSpecialRenderer(EntityModelSet modelSet) {
-
+    public PiglinSpecialRenderer() {
+        cameraRenderState = new CameraRenderState();
     }
 
     @Override
-    public void render(@Nullable PiglinRenderState piglinRenderState, ItemDisplayContext itemDisplayContext, PoseStack stack, MultiBufferSource bufferSource, int light, int overlay, boolean b) {
-        if (piglinRenderState == null) {
+    public void submit(@Nullable PiglinRenderState state, ItemDisplayContext context, PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean b) {
+        if (state == null) {
             return;
         }
-        getRenderer().render(piglinRenderState, stack, bufferSource, light);
+        PiglinRenderer piglinRenderer = getRenderer();
+        state.lightCoords = light;
+        piglinRenderer.submit(state, stack, collector, cameraRenderState);
     }
 
     @Override
@@ -78,8 +82,9 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
         }
 
         @Override
-        public SpecialModelRenderer<?> bake(EntityModelSet modelSet) {
-            return new PiglinSpecialRenderer(modelSet);
+        @Nullable
+        public SpecialModelRenderer<?> bake(BakingContext context) {
+            return new PiglinSpecialRenderer();
         }
     }
 

@@ -25,7 +25,7 @@ public class EasyPiglinsClientMod {
 
     @SubscribeEvent
     static void clientSetup(FMLClientSetupEvent event) {
-        BlockEntityRenderers.register(ModTileEntities.BARTERER.get(), c -> new BartererRenderer(c.getModelSet()));
+        BlockEntityRenderers.register(ModTileEntities.BARTERER.get(), c -> new BartererRenderer(c.blockRenderDispatcher()));
     }
 
     @SubscribeEvent

@@ -44,7 +44,7 @@ public class PiglinItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return InteractionResult.SUCCESS;
         } else {
             ItemStack itemstack = context.getItemInHand();

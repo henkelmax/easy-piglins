@@ -3,18 +3,19 @@ package de.maxhenkel.easypiglins.items.render;
 import com.mojang.serialization.MapCodec;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
 import de.maxhenkel.easypiglins.blocks.tileentity.BartererTileentity;
+import de.maxhenkel.easypiglins.blocks.tileentity.render.BartererRenderState;
 import de.maxhenkel.easypiglins.blocks.tileentity.render.BartererRenderer;
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-public class BartererSpecialRenderer extends ItemSpecialRendererBase<BartererTileentity> {
+public class BartererSpecialRenderer extends ItemSpecialRendererBase<BartererTileentity, BartererRenderState> {
 
-    public BartererSpecialRenderer(EntityModelSet modelSet, Supplier<BlockState> blockSupplier) {
-        super(modelSet, blockSupplier, BartererTileentity.class);
-        renderer = new BartererRenderer(modelSet);
+    public BartererSpecialRenderer(Supplier<BlockState> blockSupplier) {
+        super(blockSupplier, BartererTileentity.class);
+        renderer = new BartererRenderer(minecraft.getBlockRenderer());
     }
 
     public static class Unbaked implements SpecialModelRenderer.Unbaked {
@@ -31,8 +32,9 @@ public class BartererSpecialRenderer extends ItemSpecialRendererBase<BartererTil
         }
 
         @Override
-        public SpecialModelRenderer<?> bake(EntityModelSet modelSet) {
-            return new BartererSpecialRenderer(modelSet, () -> ModBlocks.BARTERER.get().defaultBlockState());
+        @Nullable
+        public SpecialModelRenderer<?> bake(BakingContext context) {
+            return new BartererSpecialRenderer(() -> ModBlocks.BARTERER.get().defaultBlockState());
         }
     }
 }
