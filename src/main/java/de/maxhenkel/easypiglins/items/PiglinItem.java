@@ -70,7 +70,7 @@ public class PiglinItem extends Item {
 
     @Override
     public Component getName(ItemStack stack) {
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             Component clientName = ClientPiglinItemUtils.getClientName(stack);
             if (clientName != null) {
                 return clientName;

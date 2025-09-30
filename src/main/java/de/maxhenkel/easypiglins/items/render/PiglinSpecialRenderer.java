@@ -31,7 +31,7 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
     }
 
     @Override
-    public void submit(@Nullable PiglinRenderState state, ItemDisplayContext context, PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean b) {
+    public void submit(@Nullable PiglinRenderState state, ItemDisplayContext context, PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean b, int i) {
         if (state == null) {
             return;
         }
