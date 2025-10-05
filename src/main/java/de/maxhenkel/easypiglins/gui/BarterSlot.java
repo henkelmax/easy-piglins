@@ -3,6 +3,7 @@ package de.maxhenkel.easypiglins.gui;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class BarterSlot extends Slot {
 
@@ -12,11 +13,11 @@ public class BarterSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        return isValid(stack);
+        return isValid(ItemResource.of(stack));
     }
 
-    public static boolean isValid(ItemStack stack) {
-        return stack.isPiglinCurrency();
+    public static boolean isValid(ItemResource resource) {
+        return resource.toStack().isPiglinCurrency();
     }
 
 }

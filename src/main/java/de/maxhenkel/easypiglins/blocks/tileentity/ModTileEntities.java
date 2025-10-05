@@ -23,7 +23,7 @@ public class ModTileEntities {
     }
 
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BARTERER.get(), (object, context) -> object.getItemHandler());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, BARTERER.get(), (object, context) -> object.getItemHandler());
     }
 
 }

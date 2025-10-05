@@ -3,10 +3,13 @@ package de.maxhenkel.easypiglins.blocks.tileentity;
 import de.maxhenkel.corelib.blockentity.IServerTickableBlockEntity;
 import de.maxhenkel.corelib.inventory.ItemListInventory;
 import de.maxhenkel.corelib.item.ItemUtils;
-import de.maxhenkel.easypiglins.MultiItemStackHandler;
 import de.maxhenkel.easypiglins.blocks.BartererBlock;
 import de.maxhenkel.easypiglins.blocks.ModBlocks;
 import de.maxhenkel.easypiglins.gui.BarterSlot;
+import de.maxhenkel.easypiglins.inventory.InputOnlyResourceHandler;
+import de.maxhenkel.easypiglins.inventory.ListAccessItemStacksResourceHandler;
+import de.maxhenkel.easypiglins.inventory.OutputOnlyResourceHandler;
+import de.maxhenkel.easypiglins.inventory.ValidateResourceHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
@@ -22,33 +25,33 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.CombinedResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class BartererTileentity extends PiglinTileentity implements IServerTickableBlockEntity {
 
-    protected NonNullList<ItemStack> inputInventory;
-    protected NonNullList<ItemStack> outputInventory;
+    protected ListAccessItemStacksResourceHandler inputInventory;
+    protected ListAccessItemStacksResourceHandler outputInventory;
     @Nullable
     protected NonNullList<ItemStack> itemsLeft;
 
     protected ItemStack barteringItem;
     protected int barteringTimeLeft;
 
-    protected MultiItemStackHandler itemHandler;
-    protected ItemStackHandler outputHandler;
+    protected CombinedResourceHandler<ItemResource> itemHandler;
 
     public BartererTileentity(BlockPos pos, BlockState state) {
         super(ModTileEntities.BARTERER.get(), ModBlocks.BARTERER.get().defaultBlockState(), pos, state);
-        inputInventory = NonNullList.withSize(4, ItemStack.EMPTY);
-        outputInventory = NonNullList.withSize(4, ItemStack.EMPTY);
+        inputInventory = new ValidateResourceHandler(4, BarterSlot::isValid);
+        outputInventory = new ListAccessItemStacksResourceHandler(4);
         barteringItem = ItemStack.EMPTY;
 
-        itemHandler = new MultiItemStackHandler(inputInventory, outputInventory, BarterSlot::isValid);
-        outputHandler = new ItemStackHandler(outputInventory);
+        itemHandler = new CombinedResourceHandler<>(new InputOnlyResourceHandler(inputInventory), new OutputOnlyResourceHandler(outputInventory));
     }
 
     @Override
@@ -89,9 +92,15 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     }
 
     public ItemStack removeBarteringItem() {
-        for (ItemStack stack : inputInventory) {
-            if (stack.isPiglinCurrency() && stack.getCount() >= 1) {
-                return stack.split(1);
+        try (Transaction t = Transaction.open(null)) {
+            for (int i = 0; i < inputInventory.size(); i++) {
+                ItemResource resource = inputInventory.getResource(i);
+                if (resource.toStack().isPiglinCurrency() && inputInventory.getAmountAsInt(i) >= 1) {
+                    if (inputInventory.extract(resource, 1, t) >= 1) {
+                        t.commit();
+                        return resource.toStack();
+                    }
+                }
             }
         }
         return ItemStack.EMPTY;
@@ -113,16 +122,17 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
         }
 
         NonNullList<ItemStack> newLeft = NonNullList.create();
-        for (ItemStack drop : itemsLeft) {
-            for (int i = 0; i < outputHandler.getSlots(); i++) {
-                drop = outputHandler.insertItem(i, drop, false);
+        try (Transaction t = Transaction.open(null)) {
+            for (ItemStack drop : itemsLeft) {
                 if (drop.isEmpty()) {
-                    break;
+                    continue;
+                }
+                int inserted = outputInventory.insert(ItemResource.of(drop), drop.getCount(), t);
+                if (inserted > 0) {
+                    newLeft.add(drop.split(drop.getCount() - inserted));
                 }
             }
-            if (!drop.isEmpty()) {
-                newLeft.add(drop);
-            }
+            t.commit();
         }
 
         if (newLeft.isEmpty()) {
@@ -139,8 +149,8 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     protected void saveAdditional(ValueOutput valueOutput) {
         super.saveAdditional(valueOutput);
 
-        ItemUtils.saveInventory(valueOutput.child("InputInventory"), "Items", inputInventory);
-        ItemUtils.saveInventory(valueOutput.child("OutputInventory"), "Items", outputInventory);
+        ItemUtils.saveInventory(valueOutput.child("InputInventory"), "Items", inputInventory.getRaw());
+        ItemUtils.saveInventory(valueOutput.child("OutputInventory"), "Items", outputInventory.getRaw());
 
         if (itemsLeft != null) {
             ItemUtils.saveItemList(valueOutput, "ItemsLeft", itemsLeft);
@@ -154,10 +164,10 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
 
     @Override
     protected void loadAdditional(ValueInput valueInput) {
-        inputInventory.clear();
-        outputInventory.clear();
-        ItemUtils.readItemList(valueInput.childOrEmpty("InputInventory"), "Items", inputInventory);
-        ItemUtils.readItemList(valueInput.childOrEmpty("OutputInventory"), "Items", outputInventory);
+        inputInventory.getRaw().clear();
+        outputInventory.getRaw().clear();
+        ItemUtils.readItemList(valueInput.childOrEmpty("InputInventory"), "Items", inputInventory.getRaw());
+        ItemUtils.readItemList(valueInput.childOrEmpty("OutputInventory"), "Items", outputInventory.getRaw());
 
         itemsLeft = ItemUtils.readItemList(valueInput, "ItemsLeft", false);
 
@@ -168,14 +178,14 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
     }
 
     public Container getInputInventory() {
-        return new ItemListInventory(inputInventory, this::setChanged);
+        return new ItemListInventory(inputInventory.getRaw(), this::setChanged);
     }
 
     public Container getOutputInventory() {
-        return new ItemListInventory(outputInventory, this::setChanged);
+        return new ItemListInventory(outputInventory.getRaw(), this::setChanged);
     }
 
-    public IItemHandler getItemHandler() {
+    public ResourceHandler<ItemResource> getItemHandler() {
         return itemHandler;
     }
 
