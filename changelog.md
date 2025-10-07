@@ -1,1 +1,1 @@
-- Updated required NeoForge version
+- Updated to 1.21.10
