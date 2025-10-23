@@ -26,11 +26,13 @@ public class EasyPiglinsMod {
     public static final Logger LOGGER = LogManager.getLogger(MODID);
 
     public static ServerConfig SERVER_CONFIG;
+    public static ClientConfig CLIENT_CONFIG;
 
     public EasyPiglinsMod(IEventBus eventBus) {
         eventBus.addListener(ModTileEntities::onRegisterCapabilities);
 
         SERVER_CONFIG = CommonRegistry.registerConfig(MODID, ModConfig.Type.SERVER, ServerConfig.class);
+        CLIENT_CONFIG = CommonRegistry.registerConfig(MODID, ModConfig.Type.CLIENT, ClientConfig.class);
 
         ModBlocks.init(eventBus);
         ModItems.init(eventBus);
