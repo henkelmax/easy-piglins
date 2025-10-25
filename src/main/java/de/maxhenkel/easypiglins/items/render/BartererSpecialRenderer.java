@@ -15,7 +15,7 @@ public class BartererSpecialRenderer extends ItemSpecialRendererBase<BartererTil
 
     public BartererSpecialRenderer(Supplier<BlockState> blockSupplier) {
         super(blockSupplier, BartererTileentity.class);
-        renderer = new BartererRenderer(minecraft.getBlockRenderer());
+        renderer = new BartererRenderer();
     }
 
     public static class Unbaked implements SpecialModelRenderer.Unbaked {

@@ -94,7 +94,7 @@ public class BartererBlock extends HorizontalRotatableBlock implements EntityBlo
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.INVISIBLE;
+        return RenderShape.MODEL;
     }
 
     @Override

@@ -27,7 +27,7 @@ public class EasyPiglinsClientMod {
 
     @SubscribeEvent
     static void clientSetup(FMLClientSetupEvent event) {
-        BlockEntityRenderers.register(ModTileEntities.BARTERER.get(), c -> new BartererRenderer(c.blockRenderDispatcher()));
+        BlockEntityRenderers.register(ModTileEntities.BARTERER.get(), c -> new BartererRenderer());
 
         NeoForge.EVENT_BUS.register(new ModSoundEvents());
     }

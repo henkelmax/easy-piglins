@@ -5,15 +5,11 @@ import com.mojang.math.Axis;
 import de.maxhenkel.easypiglins.blocks.BartererBlock;
 import de.maxhenkel.easypiglins.blocks.tileentity.BartererTileentity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.monster.piglin.Piglin;
@@ -23,12 +19,10 @@ import org.jetbrains.annotations.Nullable;
 public class BartererRenderer implements BlockEntityRenderer<BartererTileentity, BartererRenderState> {
 
     private final Minecraft minecraft;
-    private final BlockRenderDispatcher blockRenderer;
     private PiglinRenderer renderer;
 
-    public BartererRenderer(BlockRenderDispatcher blockRenderer) {
+    public BartererRenderer() {
         minecraft = Minecraft.getInstance();
-        this.blockRenderer = blockRenderer;
     }
 
     @Override
@@ -66,19 +60,6 @@ public class BartererRenderer implements BlockEntityRenderer<BartererTileentity,
     @Override
     public void submit(BartererRenderState renderState, PoseStack stack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
         stack.pushPose();
-
-        // See ItemFrameRenderer
-        submitNodeCollector.submitBlockModel(
-                stack,
-                RenderType.entityCutout(TextureAtlas.LOCATION_BLOCKS),
-                blockRenderer.getBlockModel(renderState.blockState),
-                1F,
-                1F,
-                1F,
-                renderState.lightCoords,
-                OverlayTexture.NO_OVERLAY,
-                0
-        );
 
         if (renderState.renderPiglin) {
             stack.pushPose();

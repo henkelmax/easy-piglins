@@ -1,1 +1,1 @@
-- Added piglin volume config option
+- Fixed barterer block not rendered in inventory
