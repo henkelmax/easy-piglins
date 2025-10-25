@@ -11,7 +11,7 @@ public class ModBlocks {
 
     private static final DeferredRegister.Blocks BLOCK_REGISTER = DeferredRegister.createBlocks(EasyPiglinsMod.MODID);
 
-    public static final DeferredHolder<Block, BartererBlock> BARTERER = BLOCK_REGISTER.registerBlock("barterer", BartererBlock::new, BlockBehaviour.Properties.of());
+    public static final DeferredHolder<Block, BartererBlock> BARTERER = BLOCK_REGISTER.registerBlock("barterer", BartererBlock::new, BlockBehaviour.Properties::of);
 
     public static void init(IEventBus eventBus) {
         BLOCK_REGISTER.register(eventBus);
