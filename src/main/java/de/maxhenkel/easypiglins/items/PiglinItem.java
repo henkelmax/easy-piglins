@@ -5,8 +5,11 @@ import de.maxhenkel.easypiglins.datacomponents.PiglinData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -14,7 +17,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.piglin.Piglin;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -82,7 +84,7 @@ public class PiglinItem extends Item {
     @Override
     public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
         super.inventoryTick(stack, level, entity, slot);
-        if (!(entity instanceof Player player)) {
+        if (!(entity instanceof ServerPlayer player)) {
             return;
         }
         if (!EasyPiglinsMod.SERVER_CONFIG.piglinInventorySounds.get()) {
@@ -92,7 +94,18 @@ public class PiglinItem extends Item {
             return;
         }
         if (level.random.nextInt(20) == 0) {
-            player.playNotifySound(SoundEvents.PIGLIN_AMBIENT, SoundSource.HOSTILE, 1F, 1F);
+            player.connection.send(
+                    new ClientboundSoundPacket(
+                            BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.PIGLIN_AMBIENT),
+                            SoundSource.HOSTILE,
+                            player.getX(),
+                            player.getY(),
+                            player.getZ(),
+                            1F,
+                            1F,
+                            player.getRandom().nextLong()
+                    )
+            );
         }
     }
 }

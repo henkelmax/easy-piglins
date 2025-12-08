@@ -14,9 +14,9 @@ import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderState> {
 
@@ -41,7 +41,7 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
     }
 
     @Override
-    public void getExtents(Set<Vector3f> vecs) {
+    public void getExtents(Consumer<Vector3fc> vecs) {
 
     }
 

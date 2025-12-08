@@ -7,7 +7,7 @@ import de.maxhenkel.easypiglins.gui.Containers;
 import de.maxhenkel.easypiglins.items.render.BartererSpecialRenderer;
 import de.maxhenkel.easypiglins.items.render.PiglinSpecialRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,9 +34,9 @@ public class EasyPiglinsClientMod {
 
     @SubscribeEvent
     static void registerItemModels(RegisterSpecialModelRendererEvent event) {
-        event.register(ResourceLocation.fromNamespaceAndPath(EasyPiglinsMod.MODID, "barterer"), BartererSpecialRenderer.Unbaked.MAP_CODEC);
+        event.register(Identifier.fromNamespaceAndPath(EasyPiglinsMod.MODID, "barterer"), BartererSpecialRenderer.Unbaked.MAP_CODEC);
 
-        event.register(ResourceLocation.fromNamespaceAndPath(EasyPiglinsMod.MODID, "piglin"), PiglinSpecialRenderer.Unbaked.MAP_CODEC);
+        event.register(Identifier.fromNamespaceAndPath(EasyPiglinsMod.MODID, "piglin"), PiglinSpecialRenderer.Unbaked.MAP_CODEC);
     }
 
 }

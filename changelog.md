@@ -1,1 +1,1 @@
-- Fixed barterer block not rendered in inventory
+- Updated to 1.21.11
