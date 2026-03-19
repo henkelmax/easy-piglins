@@ -18,7 +18,7 @@ public class BartererSpecialRenderer extends ItemSpecialRendererBase<BartererTil
         renderer = new BartererRenderer();
     }
 
-    public static class Unbaked implements SpecialModelRenderer.Unbaked {
+    public static class Unbaked implements SpecialModelRenderer.Unbaked<BartererTileentity> {
 
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
 
@@ -33,7 +33,7 @@ public class BartererSpecialRenderer extends ItemSpecialRendererBase<BartererTil
 
         @Override
         @Nullable
-        public SpecialModelRenderer<?> bake(BakingContext context) {
+        public SpecialModelRenderer<BartererTileentity> bake(BakingContext context) {
             return new BartererSpecialRenderer(() -> ModBlocks.BARTERER.get().defaultBlockState());
         }
     }

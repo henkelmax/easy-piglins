@@ -8,10 +8,9 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
 import net.minecraft.client.renderer.entity.state.PiglinRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.piglin.Piglin;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
@@ -31,7 +30,7 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
     }
 
     @Override
-    public void submit(@Nullable PiglinRenderState state, ItemDisplayContext context, PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean b, int i) {
+    public void submit(@Nullable PiglinRenderState state, PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean b, int i) {
         if (state == null) {
             return;
         }
@@ -68,7 +67,7 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
         return (PiglinRenderer) minecraft.getEntityRenderDispatcher().renderers.get(EntityType.PIGLIN);
     }
 
-    public static class Unbaked implements SpecialModelRenderer.Unbaked {
+    public static class Unbaked implements SpecialModelRenderer.Unbaked<PiglinRenderState> {
 
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
 
@@ -83,7 +82,7 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
 
         @Override
         @Nullable
-        public SpecialModelRenderer<?> bake(BakingContext context) {
+        public SpecialModelRenderer<PiglinRenderState> bake(BakingContext context) {
             return new PiglinSpecialRenderer();
         }
     }

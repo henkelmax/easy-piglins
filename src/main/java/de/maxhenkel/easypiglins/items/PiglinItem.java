@@ -93,7 +93,7 @@ public class PiglinItem extends Item {
         if (level.getGameTime() % 20 != 0) {
             return;
         }
-        if (level.random.nextInt(20) == 0) {
+        if (level.getRandom().nextInt(20) == 0) {
             player.connection.send(
                     new ClientboundSoundPacket(
                             BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.PIGLIN_AMBIENT),

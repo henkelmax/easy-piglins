@@ -37,7 +37,7 @@ public class PiglinEvents {
 
         if (!PiglinAi.isWearingSafeArmor(player) || !piglin.getBrain().isActive(Activity.IDLE)) {
             piglin.getBrain().setMemoryWithExpiry(MemoryModuleType.ANGRY_AT, player.getUUID(), 600L);
-            player.displayClientMessage(Component.translatable("message.easy_piglins.cant_pick_up"), true);
+            player.sendOverlayMessage(Component.translatable("message.easy_piglins.cant_pick_up"));
             return;
         }
 

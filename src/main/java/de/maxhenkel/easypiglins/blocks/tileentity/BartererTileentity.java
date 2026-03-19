@@ -61,7 +61,7 @@ public class BartererTileentity extends PiglinTileentity implements IServerTicka
             return;
         }
 
-        if (level.getGameTime() % 20 == 0 && level.random.nextInt(40) == 0) {
+        if (level.getGameTime() % 20 == 0 && level.getRandom().nextInt(40) == 0) {
             BartererBlock.playPiglinSound(level, worldPosition, SoundEvents.PIGLIN_AMBIENT);
         }
 
