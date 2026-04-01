@@ -8,20 +8,28 @@ plugins {
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
+repositories {
+    maven { url = "https://maven.blamejared.com/" }
+}
+
 dependencies {
     shadow "de.maxhenkel.corelib:corelib:${corelib_version}+${minecraft_version}:api"
     runtimeOnly "de.maxhenkel.corelib:corelib:${corelib_version}+${minecraft_version}"
     compileOnly "de.maxhenkel.corelib:corelib:${corelib_version}+${minecraft_version}:javadoc"
 
+    compileOnly("mezz.jei:jei-26.1-neoforge-api:${jei_version}")
+    //compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    //runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     //implementation "maven.modrinth:jei:${jei_version}"
-    //implementation "maven.modrinth:jade:${jade_version}"
+    implementation "maven.modrinth:jade:${jade_version}"
 }
 
 processResources {
     filesMatching('**/*.toml') {
         expand 'mod_version': mod_version,
                 'neoforge_dependency': neoforge_dependency,
-                'minecraft_version': minecraft_version
+                'minecraft_version': minecraft_version,
+                'minecraft_dependency': minecraft_dependency
     }
 }
 
