@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.PiglinRenderer;
 import net.minecraft.client.renderer.entity.state.PiglinRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -64,7 +64,7 @@ public class PiglinSpecialRenderer implements SpecialModelRenderer<PiglinRenderS
     }
 
     public static PiglinRenderer createPiglinRenderer() {
-        return (PiglinRenderer) minecraft.getEntityRenderDispatcher().renderers.get(EntityType.PIGLIN);
+        return (PiglinRenderer) minecraft.getEntityRenderDispatcher().renderers.get(EntityTypes.PIGLIN);
     }
 
     public static class Unbaked implements SpecialModelRenderer.Unbaked<PiglinRenderState> {

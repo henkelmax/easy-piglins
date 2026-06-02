@@ -14,7 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.Item;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 public class PiglinItem extends Item {
 
     public PiglinItem(Properties properties) {
-        super(properties.stacksTo(1).component(DataComponents.ITEM_NAME, Component.translatable(EntityType.PIGLIN.getDescriptionId())));
+        super(properties.stacksTo(1).component(DataComponents.ITEM_NAME, Component.translatable(EntityTypes.PIGLIN.getDescriptionId())));
 
         DispenserBlock.registerBehavior(this, (source, stack) -> {
             Direction direction = source.state().getValue(DispenserBlock.FACING);

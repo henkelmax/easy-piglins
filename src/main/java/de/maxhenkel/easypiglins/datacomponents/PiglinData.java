@@ -11,7 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
@@ -82,7 +82,8 @@ public class PiglinData {
     }
 
     public Piglin createPiglin(Level level, @Nullable ItemStack stack) {
-        Piglin v = new Piglin(EntityType.PIGLIN, level);
+        Piglin v = new Piglin(EntityTypes.PIGLIN, level);
+        v.setId(Integer.MIN_VALUE);
         v.readAdditionalSaveData(ValueInputOutputUtils.createValueInput(EasyPiglinsMod.MODID, level.registryAccess(), nbt));
         if (stack != null) {
             Component customName = stack.get(DataComponents.CUSTOM_NAME);
