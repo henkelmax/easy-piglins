@@ -64,7 +64,7 @@ public class BartererRenderer implements BlockEntityRenderer<BartererTileentity,
         if (renderState.renderPiglin) {
             stack.pushPose();
             stack.translate(0.5D, 1D / 16D, 0.5D);
-            stack.mulPose(Axis.YP.rotationDegrees(-renderState.direction.toYRot()));
+            stack.rotate(Axis.YP.rotationDegrees(-renderState.direction.toYRot()));
             stack.translate(0D, 0D, -4D / 16D);
             stack.scale(0.45F, 0.45F, 0.45F);
             renderer.submit(renderState.piglinRenderState, stack, submitNodeCollector, cameraRenderState);
