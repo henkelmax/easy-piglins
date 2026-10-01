@@ -31,7 +31,7 @@ public class EasyPiglinsMod {
     public EasyPiglinsMod(IEventBus eventBus) {
         eventBus.addListener(ModTileEntities::onRegisterCapabilities);
 
-        SERVER_CONFIG = CommonRegistry.registerConfig(MODID, ModConfig.Type.SERVER, ServerConfig.class);
+        SERVER_CONFIG = CommonRegistry.registerConfig(MODID, ModConfig.Type.SYNCED, ServerConfig.class);
         CLIENT_CONFIG = CommonRegistry.registerConfig(MODID, ModConfig.Type.CLIENT, ClientConfig.class);
 
         ModBlocks.init(eventBus);
